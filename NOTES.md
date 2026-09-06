@@ -180,7 +180,13 @@ The `README` carries the identifiers and what to do if yours differ.
 **The hazard runs the other way too, and it is not hypothetical.** The sibling keyboard
 project scopes all of its rules with `device_unless is_built_in_keyboard`, which excludes a
 laptop keyboard and nothing else — this mouse included. Those rules currently produce
-`F13`–`F16` but never *match* on them, so nothing collides today. The moment a rule with
+`F13`–`F16` but never *match* on them, so nothing collides today.
+
+That much is confirmed by test, not just by reading the JSON. The keyboard's `Insert`
+becomes `F16` through a complex modification, and the mouse's Button 4 emits `F16` directly,
+yet pressing `Insert` does not trigger Back. Two independent reasons: Karabiner does not
+feed a manipulator's output back through the chain, and the condition names the mouse
+anyway. The moment a rule with
 `f16` through `f19` in its `from` is added to that project, this mouse would start firing
 it. If that ever happens, the fix is to add a `device_unless` for the mouse's IDs there,
 not to move this project off the F-keys.
