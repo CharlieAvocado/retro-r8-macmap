@@ -3,8 +3,9 @@
 The lab notebook. `README.md` says what to do; this says why, and what the hardware
 will not let you do at all.
 
-Everything about which buttons emit what has been confirmed against real EventViewer
-captures in both hand modes. The few points still marked *unverified* say so explicitly.
+Everything here has been confirmed on hardware: which buttons emit what, in both hand
+modes, from real EventViewer captures, and every rule in `retror8-macmap.json` tested in
+place. Nothing in this document is inferred unless it says so.
 
 ---
 
@@ -147,11 +148,17 @@ every rule from matching, which is a confusing failure to diagnose.
 The forward-delete rule asks for `control` rather than `left_control`, so either control
 key works. `left_option` stays exact, because that is specifically what the mouse sends.
 
-**Unverified:** whether the modifier can be held on a *different* device than the one the
-button press comes from — pressing the mouse button while holding `Ctrl` on the laptop
-keyboard. Karabiner is expected to merge modifier flags across devices, the same way
-holding shift on one keyboard capitalises a letter typed on another, but this has not been
-tested on this hardware.
+Karabiner merges modifier flags across devices, so the `Ctrl` may be held on any keyboard
+while the button press arrives from the mouse — the same way holding shift on one keyboard
+capitalises a letter typed on another. Tested, not assumed; it is the one part of this set
+whose behaviour was not obvious in advance.
+
+`Ctrl` rather than `Cmd` is deliberate. On macOS the control key is where text-editing
+bindings live — `Ctrl`+`D` is already forward-delete in most text fields — while `Cmd`
+belongs to application commands, and `Cmd`+`Delete` already means delete to the start of
+the line. Forward-delete is a text-editing operation, so it goes on the text-editing
+modifier. Neither combination collides with anything, so this is a matter of fitting the
+platform's habits rather than avoiding a conflict.
 
 ## Settings on the Devices tab that look relevant and are not
 
