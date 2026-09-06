@@ -39,8 +39,8 @@ correctly. 8BitDo shipped a keystroke where most mice ship a HID back/forward bu
 
 The R8 has two side buttons on each flank. The manual's mode chords give the design away:
 
-- Left-hand mode: hold `Button 6` + `Button 7` + Middle for 5 seconds.
-- Right-hand mode: hold `Button 4` + `Button 5` + Middle for 5 seconds.
+- Left-hand mode: hold `Button 6` + `Button 7` + `Middle` for 5 seconds.
+- Right-hand mode: hold `Button 4` + `Button 5` + `Middle` for 5 seconds.
 
 Each pair is the thumb pair for one hand. The mouse ships in right-hand mode, so the
 left-flank pair (4 and 5) is live and the right-flank pair (6 and 7) is muted. The
@@ -52,8 +52,9 @@ sends nothing to the host.
 on the wire. EventViewer showing nothing is the correct and complete answer, not a
 symptom of a missing setting.
 
-They are not "super buttons." The manual describes no such feature, and nothing in the
-device's behaviour suggests one.
+They are also not 8BitDo's Super Buttons. That feature is programmed from an 8BitDo
+keyboard, and running the procedure with one present does not offer the mouse as a target.
+Tested, not assumed.
 
 ## Left-hand mode is a mirror, not an unlock
 
@@ -67,9 +68,9 @@ inferred:
 - `Button 4` and `Button 5` go silent in exchange.
 - Primary and secondary click swap too. You left-click with the right button.
 
-The mode flips the entire mouse. **You never have more than two thumb buttons.** You only
-choose which flank they sit on, and pay for it with reversed clicks. For a right-handed
-user there is nothing here.
+The mode flips the entire mouse. **Out of the box you never have more than two thumb
+buttons.** You only choose which flank they sit on, and pay for it with reversed clicks.
+For a right-handed user there is nothing here. Getting all four takes the vendor app.
 
 You cannot get stranded trying it. The return chord is read in firmware rather than over
 HID, which is the same reason `Button 6` + `Button 7` can trigger the switch while sending
@@ -79,13 +80,14 @@ nothing to the host. Muted buttons still form chords.
 
 **8BitDo Ultimate Software V2** is the only way to make them emit anything. A macOS build
 exists. The Windows build is the one that surfaces first in most searches, which is the
-usual source of the belief that there is no Mac version. It ships as `UltimateSoftwareV2.dmg`, requires macOS 13 or above, runs on Intel and
-Apple Silicon, and the R8 is on its supported list by name. Connect the mouse by cable —
-the app is unlikely to find it over Bluetooth.
+usual source of the belief that there is no Mac version. It ships as
+`UltimateSoftwareV2.dmg`, requires macOS 13 or above, runs on Intel and Apple Silicon, and
+the R8 is on its supported list by name. Connect the mouse by cable — the app is unlikely
+to find it over Bluetooth.
 
 The app can assign a side button from several groups: alphanumeric, function, numpad,
 navigation, modifiers, symbols, mouse functions, shortcuts, macros, or disable. The DPI
-switch does not appear in that list at all, which is the final word on repurposing it.
+switch does not appear in that list at all, which seems the final word on repurposing it.
 
 **Use the app for as little as possible.** Its only job here is to make a silent button
 emit something unique; Karabiner decides what that means. Concretely, all four side buttons
@@ -96,7 +98,12 @@ They are couriers, not functions. There is no useful assignment to find inside t
 none is needed.
 
 The profile is written into the mouse rather than held by a running helper, so the app can
-be quit, and the buttons keep working. A factory reset wipes it.
+be quit and even uninstalled, and the buttons keep working.
+
+A factory reset *will* wipe it, and the app has to be run again to put it back. It does not
+break everything, though: the rule set also carries manipulators for the factory keystrokes,
+so Buttons 4 and 5, the wheel press and forward-delete keep working on a reset mouse.
+Buttons 6 and 7 are the only casualties, because a reset returns them to sending nothing.
 
 ## Why not the app's macro feature
 
@@ -145,23 +152,67 @@ a mouse that has never met the app — or on one that has been factory reset.
 
 ## Getting more actions than you have buttons
 
-Karabiner can split one button into several gestures, so four switches is not a hard
-ceiling of four actions:
+The mouse offers five switches Karabiner can reach: Buttons 4 to 7 and the wheel press.
+Each of those can carry more than one action, so five switches is not a ceiling of five
+actions. Six mechanisms are available, and they differ in what they add and what they cost.
 
-- `to_if_alone` and `to_if_held_down` split a button into a tap and a hold.
-- A `simultaneous` rule on two buttons gives a gesture neither has alone.
-- A button held as a layer modifier changes what the wheel or another button does.
+| Mechanism | Karabiner construct | Adds | Costs |
+|---|---|---|---|
+| Tap versus hold | `to_if_alone` with `to_if_held_down` | one action per switch | the tap fires on release, and the hold waits out a threshold |
+| Modifier variants | `mandatory` in `from.modifiers` | one action per modifier per switch | needs the other hand on a keyboard |
+| Simultaneous chord | `simultaneous` | one action per combination | awkward to press, and needs `simultaneous_options` set thoughtfully |
+| Layer button | `set_variable` with a `variable_if` condition | one action per target under the layer | the layer button gives up its own actions |
+| Application scope | `frontmost_application_if` | multiplies every action above | one manipulator per application per action |
+| Multi-tap | `to_delayed_action` with a counter variable | one or two per switch | the single tap cannot commit until the window expires |
 
-None of it needs the vendor app.
+A single switch, without involving any other:
+
+```
+  Button 6 ─┬─ tap ........................ action 1
+            ├─ hold ....................... action 2
+            ├─ Ctrl + press ............... action 3
+            ├─ Opt + press ................ action 4
+            └─ Cmd + press ................ action 5
+```
+
+Spending a button as a layer instead, which is what makes the wheel reachable:
+
+```
+  Button 7 held ─┬─ Button 4 ............... action A
+   (as a layer)  ├─ Button 5 ............... action B
+                 ├─ Button 6 ............... action C
+                 ├─ wheel up ............... action D
+                 └─ wheel down ............. action E
+
+  Button 7 alone ─── nothing. The layer costs it every action of its own.
+```
+
+**Why a single headline number is misleading.** The mechanisms compete for the same
+presses. A button spent as a layer modifier no longer has a tap or a hold. A pair committed
+to a chord makes each of its members slower to fire alone, because Karabiner must wait to
+see whether the partner is coming. Multiplying six mechanisms by five switches gives a
+number that cannot all be true at once.
+
+The arithmetic that does hold: tap and hold across the four side buttons is eight, the wheel
+press makes nine, and one modifier variant across the four side buttons brings it to
+thirteen. That much is comfortable and needs no layer and no chord. Past roughly a dozen the
+gestures start to feel like a chord progression rather than a mouse.
+
+Application scope is the mechanism worth reaching for first, because it is the only one that
+costs no gesture at all. The same press does one thing in a browser and another in Finder,
+and the hand never learns anything new.
+
+None of this needs the vendor app. It is all in the rule set.
 
 ## The DPI switch button
 
 Cycles DPI (800 / 1200 / 1600 / 2400 / 3200 / 6400, signalled by indicator colour) entirely
 in firmware, telling the host nothing. Confirmed silent in EventViewer in both hand modes,
-and absent from the app's list of assignable buttons. There is no route to it.
+and absent from the app's list of assignable buttons. No route to it could be found.
 
-The levels themselves can be edited in the app, so the nearest thing to a fix is collapsing
-the cycle until pressing the button stops mattering.
+The levels themselves *can* be edited in the app, which allows any six values. The nearest
+thing to switching the button off is setting all six the same, or separating them by a
+negligible amount. The button still cycles, but cycling stops meaning anything.
 
 ## Why `device_if` and not `device_unless`
 
@@ -181,18 +232,19 @@ project scopes all of its rules with `device_unless is_built_in_keyboard`, which
 laptop keyboard and nothing else — this mouse included. Those rules currently produce
 `F13`–`F16` but never *match* on them, so nothing collides today.
 
-That much is confirmed by test, not just by reading the JSON. The keyboard's `Insert`
-becomes `F16` through a complex modification, and the mouse's Button 4 emits `F16` directly,
-yet pressing `Insert` does not trigger Back. Two independent reasons: Karabiner does not
-feed a manipulator's output back through the chain, and the condition names the mouse
-anyway. The moment a rule with
-`f16` through `f19` in its `from` is added to that project, this mouse would start firing
-it. If that ever happens, the fix is to add a `device_unless` for the mouse's IDs there,
-not to move this project off the F-keys.
+That is confirmed by test rather than read off the JSON. The keyboard's `Insert` becomes
+`F16` through a complex modification, and the mouse's Button 4 emits `F16` directly, yet
+pressing `Insert` does not trigger Back. Two independent reasons: Karabiner does not feed a
+manipulator's output back through the chain, and the condition names the mouse anyway.
 
-Karabiner draws the mouse as a single row with a keyboard-over-mouse icon and the adapter
-as two rows, one per interface. The list also changes as devices come and go. That is
-display, not behaviour — do not read meaning into which icons appear.
+What would break it is a rule with `f16` through `f19` in its `from` being added to the
+keyboard project — this mouse would start firing it. The fix then is to add a
+`device_unless` for the mouse's IDs there, not to move this project off the F-keys.
+
+In `Configurations → Devices`, Karabiner draws the mouse as a single row with a
+keyboard-over-mouse icon and the adapter as two rows, one per interface. The list also
+changes as devices come and go. That is display, not behaviour — do not read meaning into
+which icons appear.
 
 ## Rule order, and why it barely matters here
 

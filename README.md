@@ -28,7 +28,7 @@ Two files do the work:
 | Buttons 6 and 7 | Yours to assign — see below |
 
 Left click, right click and wheel scroll are untouched. The DPI switch cannot be
-repurposed by any means; `NOTES.md` explains why.
+repurposed at all; `NOTES.md` explains why, and what to do about it instead.
 
 ---
 
@@ -54,11 +54,9 @@ on how it is connected. Tick every row that is the R8.
 Simple Modifications run *before* complex modifications, so a leftover entry silently
 rewrites a button out from under these rules.
 
-While debugging, know where EventViewer sits in the chain: it shows events **after Simple
-Modifications but before Complex Modifications.** A button with a Simple Modification on it
-displays as whatever it was rewritten to rather than what the hardware sent, while nothing
-in this rule set ever changes what EventViewer prints. Judge these rules by what the Mac
-does, not by what EventViewer shows.
+Judge these rules by what the Mac does, not by what EventViewer shows — it sits at a point
+in the chain where a working rule and a broken one look identical. `NOTES.md` explains
+where.
 
 ### 3. Assign the side buttons in 8BitDo's app
 
@@ -78,12 +76,12 @@ Set each side button to `Function`, then:
 | Button 6 | `F18` |
 | Button 7 | `F19` |
 
-Save the profile to the device. macOS binds nothing to `F16`–`F19` and no keyboard types
-them by accident, which is exactly why they are the right choice — they are couriers, not
-functions. Karabiner decides what they mean.
+Save the profile to the device. `NOTES.md` explains why those four keys specifically, and
+why nothing more should be changed in the app.
 
-The profile is written into the mouse, so you can quit the app afterwards and the buttons
-keep working. A factory reset wipes it.
+The profile is written into the mouse, so the app can be quit or even uninstalled afterwards
+and the buttons keep working. A factory reset wipes it, and `NOTES.md` covers what survives
+one.
 
 **If you skip this step**, Buttons 4 and 5 still work — the rule set also carries rules
 for the factory keystrokes — but Buttons 6 and 7 stay dead. See `NOTES.md`.
@@ -92,10 +90,11 @@ for the factory keystrokes — but Buttons 6 and 7 stay dead. See `NOTES.md`.
 
 1. Open `retror8-macmap.json` and copy the whole file.
 2. `Karabiner-Elements → Complex Modifications`.
-3. **Add your own rule** → paste → Add (or Save).
+3. **Add your own rule** → delete the default contents → paste the copied JSON → Add
+   (or Save).
 
 **To update it later**, edit that entry in place with its edit button, or delete it and
-add a fresh one. Karabiner runs the copy you pasted in, so changing the JSON elsewhere
+add a fresh one. Karabiner runs only the copy you paste in, so changing the JSON elsewhere
 does not reach it.
 
 If a rule does not seem to fire, check what Karabiner actually has loaded:
