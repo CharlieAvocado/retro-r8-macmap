@@ -78,8 +78,8 @@ nothing to the host. Muted buttons still form chords.
 ## Reaching Buttons 6 and 7: the vendor app, used sparingly
 
 **8BitDo Ultimate Software V2** is the only way to make them emit anything. A macOS build
-exists, which is worth stating plainly because the Windows build is the one people find
-first. It ships as `UltimateSoftwareV2.dmg`, requires macOS 13 or above, runs on Intel and
+exists. The Windows build is the one that surfaces first in most searches, which is the
+usual source of the belief that there is no Mac version. It ships as `UltimateSoftwareV2.dmg`, requires macOS 13 or above, runs on Intel and
 Apple Silicon, and the R8 is on its supported list by name. Connect the mouse by cable —
 the app is unlikely to find it over Bluetooth.
 
@@ -92,8 +92,8 @@ emit something unique; Karabiner decides what that means. Concretely, all four s
 are assigned to `F16` through `F19` in button order and nothing else is touched.
 
 `F16`–`F19` because macOS binds nothing to them and no keyboard produces them by accident.
-They are couriers, not functions. Looking for a *useful* assignment inside the app is the
-wrong instinct — there isn't one, and you don't want one.
+They are couriers, not functions. There is no useful assignment to find inside the app, and
+none is needed.
 
 The profile is written into the mouse rather than held by a running helper, so the app can
 be quit, and the buttons keep working. A factory reset wipes it.
@@ -111,12 +111,12 @@ entirely. It cannot, and taking it would cost:
 - **Durability.** A factory reset wipes macros. A rule set is a file.
 - **Diagnosis.** A misbehaving macro is opaque. Karabiner shows every step in EventViewer.
 
-Macros earn their place for long literal sequences you want typed identically everywhere.
-That is not this.
+Macros earn their place for long literal sequences to be typed identically everywhere. That
+is not the use here.
 
 ## Writing a profile also rewrites Buttons 4 and 5
 
-This is the trap, and it is easy to miss because it happens without being asked for.
+This is easy to miss, because it happens without being asked for.
 
 Out of the box the app's Forward and Back functions on Buttons 4 and 5 are expressed as
 `Option`+`]` and `Option`+`[` — the Windows shortcuts, which on a US Mac layout type `‘`
@@ -132,7 +132,7 @@ firmware states, and a rule set written against one is dead against the others:
 | App defaults, after any save | `Cmd`+`]` | `Cmd`+`[` |
 | Explicitly assigned | `f16` | `f17` |
 
-Two consequences worth carrying:
+Two consequences:
 
 - **The app alone fixes this mouse for Mac.** Anyone who only wants working Back and
   Forward needs no Karabiner at all — install the app, save a profile, done.
@@ -145,15 +145,14 @@ a mouse that has never met the app — or on one that has been factory reset.
 
 ## Getting more actions than you have buttons
 
-Karabiner can split one button into several gestures, which is worth knowing before
-concluding you have run out of buttons:
+Karabiner can split one button into several gestures, so four switches is not a hard
+ceiling of four actions:
 
 - `to_if_alone` and `to_if_held_down` split a button into a tap and a hold.
 - A `simultaneous` rule on two buttons gives a gesture neither has alone.
 - A button held as a layer modifier changes what the wheel or another button does.
 
-None of it needs the vendor app, and it is the honest answer to wanting a fifth and sixth
-action out of four switches.
+None of it needs the vendor app.
 
 ## The DPI switch button
 
@@ -207,7 +206,7 @@ which would make the plain rule greedy — cannot silently break forward-delete.
 specific above general and the trap never opens.
 
 `optional: ["caps_lock"]` appears on every rule. Without it, having caps lock on stops every
-rule from matching, which is a miserable thing to diagnose.
+rule from matching, which is hard to diagnose.
 
 Forward-delete asks for `control` rather than `left_control`, so either control key works.
 
@@ -226,11 +225,11 @@ rather than avoiding a conflict.
 ## Where EventViewer sits in the chain
 
 EventViewer reports events **after Simple Modifications and before Complex Modifications.**
-Both halves of that have caught us out:
+Both halves matter:
 
 - A button carrying a Simple Modification displays as its replacement, not as what the
-  hardware sent. Chasing a firmware explanation for a rewrite you made yourself is a good
-  way to lose an hour.
+  hardware sent. At this stage a rewrite made in Simple Modifications is indistinguishable
+  from firmware behaviour.
 - Nothing in this rule set ever changes what EventViewer prints. A working rule looks
   identical to a broken one there. Judge these rules by what the Mac does.
 
@@ -248,10 +247,9 @@ way: buttons 1 to 3 are edited under one profile and 4 to 7 under another.
 than obvious: the side-button rules all work, and only the wheel press does nothing, which
 reads like a bad rule instead of a device that was never enabled.
 
-This is the one thing in the project that actually went wrong in practice, and it cost real
-time. EventViewer was no help — it reported `button3` correctly throughout, because it sits
-upstream of complex modifications and would print the same thing whether the rule worked or
-not. The fix was a checkbox.
+EventViewer cannot diagnose this. It reports `button3` correctly whether the rule fires or
+not, because it sits upstream of complex modifications. The symptom is behavioural only, and
+the fix is a checkbox rather than a change to any rule.
 
 ## Settings on the Devices tab that look relevant and are not
 
