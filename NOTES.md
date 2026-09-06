@@ -96,10 +96,21 @@ with no device filter fires just as happily when that combination is typed on th
 keyboard, and quietly eats a character the user meant to produce. The filter is not
 politeness here, it is correctness.
 
-Note that the vendor/product ID may differ between the three connection modes — 2.4 GHz
-adapter, Bluetooth, and wired. A rule set built while docked over Bluetooth may go silent
-when the adapter is plugged in. *Unverified*; confirm in EventViewer's Devices tab for
-each mode actually used.
+The mouse does not present one identity, it presents two, and a rule set naming only one
+of them goes silent the moment you change how the mouse is connected:
+
+| Device | Vendor ID | Product ID |
+|---|---|---|
+| `8BitDo Retro R8 Mouse` | `11720` | `20997` |
+| `8BitDo Retro R8 Mouse Adapter` | `11720` | `20998` |
+
+`device_if` accepts a list, so name both and stop thinking about it. Vendor `11720` is
+8BitDo's, shared across their whole range — it is not specific enough on its own, and a
+vendor-only filter would also catch an 8BitDo keyboard on the same machine.
+
+Karabiner draws the mouse as a single row with a keyboard-over-mouse icon and the adapter
+as two separate rows, one per interface. That is a display quirk, not a difference in how
+the devices behave.
 
 ## Karabiner and pointing devices
 
