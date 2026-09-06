@@ -3,9 +3,8 @@
 The lab notebook. `README.md` says what to do; this says why, and what the hardware
 will not let you do at all.
 
-Status: **investigation, no rules written yet.** Everything about which buttons emit what
-has been confirmed against real EventViewer captures in both hand modes. The few points
-still marked *unverified* say so explicitly.
+Everything about which buttons emit what has been confirmed against real EventViewer
+captures in both hand modes. The few points still marked *unverified* say so explicitly.
 
 ---
 
@@ -18,7 +17,7 @@ design.
 | Button | Diagram piece | Reaches macOS as | Mappable in Karabiner |
 |---|---|---|---|
 | Primary (left click) | 1 | pointing button | not needed |
-| Middle / wheel press | 2 | pointing button | yes |
+| Middle / wheel press | 2 | `pointing_button` `button3` | yes |
 | Secondary (right click) | 3 | pointing button | not needed |
 | DPI switch | 5 | nothing, in either hand mode | no — see below |
 | Button 4 | 6 | `left_option` + `close_bracket` | **yes** |
@@ -114,40 +113,59 @@ This keeps the interesting logic in a file that can be read, versioned, and shar
 leans on the vendor tool only for the one thing Karabiner cannot do. It also means the
 mouse profile stays simple enough to rebuild from memory after a factory reset.
 
-## Every rule needs `device_if`
+## Why `device_if` and not `device_unless`
 
 The sibling keyboard project scopes its rules with `device_unless is_built_in_keyboard`.
-This project needs the opposite and stricter form: `device_if` naming the mouse's own
-vendor and product ID.
+That is too loose here. This project needs the strict form, naming the mouse's own IDs.
 
-The reason is the keyboard interface. A rule matching `left_option` + `close_bracket`
-with no device filter fires just as happily when that combination is typed on the real
-keyboard, and quietly eats a character the user meant to produce. The filter is not
-politeness here, it is correctness.
+The reason is the keyboard interface. A rule matching `left_option` + `close_bracket` with
+no device filter fires just as happily when that combination is typed on the real
+keyboard, and quietly eats a character the user meant to produce. `device_unless
+is_built_in_keyboard` would still let the Retro 108 trigger it. The filter is not
+politeness here, it is correctness, and it has to name the device rather than exclude one.
 
-The mouse does not present one identity, it presents two, and a rule set naming only one
-of them goes silent the moment you change how the mouse is connected:
-
-| Device | Vendor ID | Product ID |
-|---|---|---|
-| `8BitDo Retro R8 Mouse` | `11720` | `20997` |
-| `8BitDo Retro R8 Mouse Adapter` | `11720` | `20998` |
-
-`device_if` accepts a list, so name both and stop thinking about it. Vendor `11720` is
-8BitDo's, shared across their whole range — it is not specific enough on its own, and a
-vendor-only filter would also catch an 8BitDo keyboard on the same machine.
+The `README` carries the identifiers and what to do if yours differ.
 
 Karabiner draws the mouse as a single row with a keyboard-over-mouse icon and the adapter
-as two separate rows, one per interface. That is a display quirk, not a difference in how
-the devices behave.
+as two rows, one per interface. The list also changes as devices come and go. That is
+display, not behaviour — do not read meaning into which icons appear.
 
-## Karabiner and pointing devices
+## Rule order, and why it barely matters here
 
-Karabiner treats pointing devices separately from keyboards, and events from a mouse may
-not appear in EventViewer until that device is ticked for modification in
-`Karabiner-Elements → Devices`. If the wheel and middle click show nothing, check there
-before concluding the hardware is silent. *Unverified* — this explains the observed
-absence but has not been tested on this device.
+The forward-delete rule sits above the plain Delete rule. Karabiner takes the first
+manipulator that matches, so a broad rule placed above a narrow one hides it.
+
+In this set the ordering is belt-and-braces rather than load-bearing. `mandatory` means
+*exactly these modifiers*, so `Option`+`[` and `Ctrl`+`Option`+`[` cannot both match the
+same manipulator; either order would work. It is written this way so that adding an
+`optional` clause later — which would make the plain rule greedy — does not silently
+break forward-delete. Keep specific above general and the trap never opens.
+
+`optional: ["caps_lock"]` appears on every rule. Without it, having caps lock on stops
+every rule from matching, which is a confusing failure to diagnose.
+
+The forward-delete rule asks for `control` rather than `left_control`, so either control
+key works. `left_option` stays exact, because that is specifically what the mouse sends.
+
+**Unverified:** whether the modifier can be held on a *different* device than the one the
+button press comes from — pressing the mouse button while holding `Ctrl` on the laptop
+keyboard. Karabiner is expected to merge modifier flags across devices, the same way
+holding shift on one keyboard capitalises a letter typed on another, but this has not been
+tested on this hardware.
+
+## Settings on the Devices tab that look relevant and are not
+
+`Ignore vendor events` and `Manipulate caps lock LED` default differently across rows, and
+the inconsistency invites fiddling. Leave both alone.
+
+Vendor events are HID events on a manufacturer's private usage pages, outside the standard
+keyboard and button pages. Nothing in this rule set — or in the sibling keyboard project —
+reads one; every manipulator uses ordinary `key_code` and `pointing_button` values. The
+setting cannot affect a rule that never looks at a vendor usage. Caps lock LED control is
+meaningless on a mouse.
+
+A setting that is not implicated is not worth changing. Changing one is how you acquire a
+mystery.
 
 ## Sources
 
@@ -155,3 +173,6 @@ absence but has not been tested on this device.
   but the PDF's embedded document title is `8BitDo-Retro-R8 Mouse-Xbox-Edition`. The
   button diagram and mode chords match the N Edition hardware.
 - 8BitDo's announcement of macOS Ultimate Software V2 support for the N Edition.
+- Karabiner-Elements documentation, *Choose devices*: "Mice are disabled by default. You
+  have to enable them if you want to change the mouse buttons in Karabiner-Elements."
+- Karabiner-Elements `NEWS.md`, for `ignore_vendor_events`.

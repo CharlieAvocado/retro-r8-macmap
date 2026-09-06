@@ -1,0 +1,91 @@
+{
+  "description": "8BitDo Retro R8 Mouse — MacMap",
+  "manipulators": [
+    {
+      "description": "B5 + Ctrl (sends Opt+[) -> Delete Forward  [must precede the plain B5 rule]",
+      "from": {
+        "key_code": "open_bracket",
+        "modifiers": {
+          "mandatory": ["left_option", "control"],
+          "optional": ["caps_lock"]
+        }
+      },
+      "to": [{ "key_code": "delete_forward" }],
+      "type": "basic",
+      "conditions": [
+        {
+          "type": "device_if",
+          "identifiers": [
+            { "vendor_id": 11720, "product_id": 20997 },
+            { "vendor_id": 11720, "product_id": 20998 }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "B5 (sends Opt+[) -> Delete (backspace)",
+      "from": {
+        "key_code": "open_bracket",
+        "modifiers": {
+          "mandatory": ["left_option"],
+          "optional": ["caps_lock"]
+        }
+      },
+      "to": [{ "key_code": "delete_or_backspace" }],
+      "type": "basic",
+      "conditions": [
+        {
+          "type": "device_if",
+          "identifiers": [
+            { "vendor_id": 11720, "product_id": 20997 },
+            { "vendor_id": 11720, "product_id": 20998 }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "B4 (sends Opt+]) -> Back (Cmd+[)",
+      "from": {
+        "key_code": "close_bracket",
+        "modifiers": {
+          "mandatory": ["left_option"],
+          "optional": ["caps_lock"]
+        }
+      },
+      "to": [
+        {
+          "key_code": "open_bracket",
+          "modifiers": ["left_command"]
+        }
+      ],
+      "type": "basic",
+      "conditions": [
+        {
+          "type": "device_if",
+          "identifiers": [
+            { "vendor_id": 11720, "product_id": 20997 },
+            { "vendor_id": 11720, "product_id": 20998 }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Middle button / wheel press -> Return  [needs Modify events ticked for the mouse]",
+      "from": {
+        "pointing_button": "button3",
+        "modifiers": { "optional": ["caps_lock"] }
+      },
+      "to": [{ "key_code": "return_or_enter" }],
+      "type": "basic",
+      "conditions": [
+        {
+          "type": "device_if",
+          "identifiers": [
+            { "vendor_id": 11720, "product_id": 20997 },
+            { "vendor_id": 11720, "product_id": 20998 }
+          ]
+        }
+      ]
+    }
+  ]
+}
