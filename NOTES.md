@@ -204,6 +204,24 @@ and the hand never learns anything new.
 
 None of this needs the vendor app. It is all in the rule set.
 
+### Why not the D-pad model
+
+8BitDo sells a second NES-styled mouse, the **N30 Wireless Mouse**, which puts a D-pad on
+the left flank where the R8 has its two thumb buttons. For a project like this the R8 is
+the better base, for two reasons.
+
+The N30's D-pad is reported to be fixed rather than programmable — left and right for
+browser back and forward, up and down for page scrolling. Fixed functions leave nothing to
+catch: no assignable keystroke means no `from` value, and the same wall as the R8's DPI
+switch. *Unverified* — taken from reviews rather than tested.
+
+The deeper reason survives even if that turns out to be wrong. A D-pad's directions are
+mutually exclusive. Up and down cannot be held together, so the chord and layer mechanisms
+in the table above mostly evaporate: four directions give four actions plus taps and holds,
+and little else. Four independent switches give six chordable pairs on top of their own
+taps and holds, and any one of them can be spent as a layer. Independent switches multiply;
+a D-pad's directions only add.
+
 ## The DPI switch button
 
 Cycles DPI (800 / 1200 / 1600 / 2400 / 3200 / 6400, signalled by indicator colour) entirely
@@ -241,7 +259,7 @@ What would break it is a rule with `f16` through `f19` in its `from` being added
 keyboard project — this mouse would start firing it. The fix then is to add a
 `device_unless` for the mouse's IDs there, not to move this project off the F-keys.
 
-In `Configurations → Devices`, Karabiner draws the mouse as a single row with a
+In `Karabiner-Elements → Devices`, Karabiner draws the mouse as a single row with a
 keyboard-over-mouse icon and the adapter as two rows, one per interface. The list also
 changes as devices come and go. That is display, not behaviour — do not read meaning into
 which icons appear.
@@ -319,10 +337,15 @@ mystery.
 
 ## Sources
 
-- 8BitDo Retro R8 Mouse manual, English pages 01–06. No page carries an edition name,
-  but the PDF's embedded document title is `8BitDo-Retro-R8 Mouse-Xbox-Edition`. The
-  button diagram and mode chords match the N Edition hardware.
+- 8BitDo Retro R8 Mouse manual, English pages 01–06. No page carries an edition name, and
+  the file's embedded document title reads `8BitDo-Retro-R8 Mouse-Xbox-Edition` — most
+  likely just a naming slip in the file itself, since the booklet's own pages describe the
+  mouse generically. It applies either way: 8BitDo describes the N Edition as functionally
+  identical to the Xbox Edition, differing only in colourway, and the button diagram and
+  mode chords match the N Edition hardware.
 - 8BitDo's announcement of macOS Ultimate Software V2 support for the N Edition.
 - Karabiner-Elements documentation, *Choose devices*: "Mice are disabled by default. You
   have to enable them if you want to change the mouse buttons in Karabiner-Elements."
 - Karabiner-Elements `NEWS.md`, for `ignore_vendor_events`.
+- Reviews of the 8BitDo N30 Wireless Mouse, for its D-pad's fixed functions. Not tested
+  first-hand.

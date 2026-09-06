@@ -36,6 +36,10 @@ repurposed at all; `NOTES.md` explains why, and what to do about it instead.
 
 You must have already installed Karabiner-Elements and Karabiner-EventViewer.
 
+Paths below are written as `Karabiner-Elements → <panel>`. In the app those panels sit in
+the sidebar under a `Configurations` header, which is a heading rather than something to
+click — so there is no extra step, only a place to look.
+
 ### 1. Enable the mouse in Karabiner
 
 **`Karabiner-Elements → Devices` → tick "Modify events" for the Retro R8 Mouse.**
