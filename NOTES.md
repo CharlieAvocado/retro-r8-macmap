@@ -217,6 +217,31 @@ line. Forward-delete is a text-editing operation, so it goes on the text-editing
 Neither combination collides with anything, so this is about fitting the platform's habits
 rather than avoiding a conflict.
 
+## Where EventViewer sits in the chain
+
+EventViewer reports events **after Simple Modifications and before Complex Modifications.**
+Both halves of that have caught us out:
+
+- A button carrying a Simple Modification displays as its replacement, not as what the
+  hardware sent. Chasing a firmware explanation for a rewrite you made yourself is a good
+  way to lose an hour.
+- Nothing in this rule set ever changes what EventViewer prints. A working rule looks
+  identical to a broken one there. Judge these rules by what the Mac does.
+
+The same applies across projects: the sibling keyboard's `Insert` shows as `insert` in
+EventViewer even though a complex modification turns it into `F16` downstream.
+
+## Karabiner lists the two interfaces separately
+
+The R8 is composite, and Karabiner gives each interface its own row on the Devices tab with
+its own `Modify events` checkbox — the pointing interface carrying the main buttons and the
+wheel, the keyboard interface carrying the side buttons. The vendor app splits them the same
+way: buttons 1 to 3 are edited under one profile and 4 to 7 under another.
+
+**Ticking one row is not ticking the other.** The failure this produces is confusing rather
+than obvious: the side-button rules all work, and only the wheel press does nothing, which
+reads like a bad rule instead of a device that was never enabled.
+
 ## Settings on the Devices tab that look relevant and are not
 
 `Ignore vendor events` and `Manipulate caps lock LED` default differently across rows, and

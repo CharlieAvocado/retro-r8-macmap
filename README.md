@@ -54,9 +54,11 @@ on how it is connected. Tick every row that is the R8.
 Simple Modifications run *before* complex modifications, so a leftover entry silently
 rewrites a button out from under these rules.
 
-While debugging, know that **EventViewer shows events after Simple Modifications have been
-applied** — a button with one on it displays as whatever it was rewritten to, not as what
-the hardware sent.
+While debugging, know where EventViewer sits in the chain: it shows events **after Simple
+Modifications but before Complex Modifications.** A button with a Simple Modification on it
+displays as whatever it was rewritten to rather than what the hardware sent, while nothing
+in this rule set ever changes what EventViewer prints. Judge these rules by what the Mac
+does, not by what EventViewer shows.
 
 ### 3. Assign the side buttons in 8BitDo's app
 
