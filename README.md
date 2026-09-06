@@ -1,8 +1,14 @@
 # 8BitDo Retro R8 Mouse MacMap with Karabiner
 
 A [Karabiner-Elements](https://karabiner-elements.pqrs.org/) rule set for the 8BitDo
-Retro R8 Mouse on macOS. It gives the thumb buttons Back and Delete, adds forward-delete
-on `Ctrl`, moves the wheel press to `Return`, and makes the two dead side buttons usable.
+Retro R8 Mouse on macOS. It makes all four side buttons reachable, including the two that
+send nothing out of the box, and scopes every rule to the mouse alone.
+
+**The button assignments are one person's taste and are meant to be changed.** They are the
+easiest part of this to replace — see
+[Changing what the buttons do](#changing-what-the-buttons-do). What is worth keeping is the
+rest: the device scoping, the profile that wakes Buttons 6 and 7, and what `NOTES.md`
+records about a mouse that is far stranger than it looks.
 
 **Every rule is scoped to the mouse's own vendor and product IDs, so nothing else you type
 is affected.** This matters more here than on a keyboard: the side buttons arrive as
@@ -17,7 +23,7 @@ Two files do the work:
 
 ---
 
-## What you get
+## What it does out of the box
 
 | Button | Becomes |
 |---|---|
@@ -25,7 +31,11 @@ Two files do the work:
 | Button 5 (rear thumb) | Delete (backspace) |
 | Button 5 + `Ctrl` | Delete forward |
 | Wheel press | `Return` |
-| Buttons 6 and 7 | Yours to assign — see below |
+| Buttons 6 and 7 | unassigned |
+
+Back and Delete on the thumb buttons is a preference, not a recommendation. Plenty of
+people would rather have Back and Forward, or page up and page down, or copy and paste.
+Nothing about the rule set depends on the choice, and swapping it is a one-line edit.
 
 Left click, right click and wheel scroll are untouched. The DPI switch cannot be
 repurposed at all; `NOTES.md` explains why, and what to do about it instead.
@@ -117,13 +127,64 @@ for p in d['profiles']:
 
 ---
 
-## Assigning Buttons 6 and 7
+## Changing what the buttons do
 
-They are deliberately left unmapped. `F18` and `F19` do nothing on macOS, so the buttons
-sit inert and harmless until you decide what you want — and the hard part, making them
-emit anything at all, is already done in step 3.
+Every button here is a one-line edit away from doing something else. Find the manipulator
+by its `description`, and change only its `to` block.
 
-To give one a job, add a manipulator like this to the list, changing only the `to` block:
+| Button | Manipulator to edit |
+|---|---|
+| Button 4 | `B4 (F16) -> Back` |
+| Button 5 | `B5 (F17) -> Delete` |
+| Button 5 + `Ctrl` | `B5 + Ctrl (F17) -> Delete Forward` |
+| Wheel press | `Middle button / wheel press -> Return` |
+| Buttons 6 and 7 | not present yet — see below |
+
+### A menu of `to` values
+
+Paste any of these in as the `to` block. They are all plain macOS behaviour; nothing here
+needs extra software.
+
+| Action | `to` |
+|---|---|
+| Back | `[{ "key_code": "open_bracket", "modifiers": ["left_command"] }]` |
+| Forward | `[{ "key_code": "close_bracket", "modifiers": ["left_command"] }]` |
+| Page up | `[{ "key_code": "page_up" }]` |
+| Page down | `[{ "key_code": "page_down" }]` |
+| Delete (backspace) | `[{ "key_code": "delete_or_backspace" }]` |
+| Delete forward | `[{ "key_code": "delete_forward" }]` |
+| Copy | `[{ "key_code": "c", "modifiers": ["left_command"] }]` |
+| Paste | `[{ "key_code": "v", "modifiers": ["left_command"] }]` |
+| Undo | `[{ "key_code": "z", "modifiers": ["left_command"] }]` |
+| Redo | `[{ "key_code": "z", "modifiers": ["left_command", "left_shift"] }]` |
+| Previous tab | `[{ "key_code": "tab", "modifiers": ["left_control", "left_shift"] }]` |
+| Next tab | `[{ "key_code": "tab", "modifiers": ["left_control"] }]` |
+| Previous desktop | `[{ "key_code": "left_arrow", "modifiers": ["left_control"] }]` |
+| Next desktop | `[{ "key_code": "right_arrow", "modifiers": ["left_control"] }]` |
+| Mission Control | `[{ "key_code": "mission_control" }]` |
+| Launchpad | `[{ "key_code": "launchpad" }]` |
+| Spotlight | `[{ "key_code": "spacebar", "modifiers": ["left_command"] }]` |
+| Screenshot area | `[{ "key_code": "4", "modifiers": ["left_command", "left_shift"] }]` |
+| Zoom in | `[{ "key_code": "equal_sign", "modifiers": ["left_command"] }]` |
+| Zoom out | `[{ "key_code": "hyphen", "modifiers": ["left_command"] }]` |
+| Close window | `[{ "key_code": "w", "modifiers": ["left_command"] }]` |
+| Volume up | `[{ "consumer_key_code": "volume_increment" }]` |
+| Volume down | `[{ "consumer_key_code": "volume_decrement" }]` |
+| Mute | `[{ "consumer_key_code": "mute" }]` |
+| Play / pause | `[{ "consumer_key_code": "play_or_pause" }]` |
+
+**If you change Button 4 or Button 5, change its `FACTORY FIRMWARE` twin too.** Those three
+manipulators exist so the set still works on a mouse that has never met the vendor app, or
+has been factory reset. Editing only one half gives a mouse that behaves differently
+depending on which firmware state it is in — a genuinely confusing bug to chase later.
+
+### Buttons 6 and 7
+
+They ship unmapped on purpose. `F18` and `F19` do nothing on macOS, so the buttons sit
+inert until you decide — and the hard part, making them emit anything at all, is already
+done in step 3.
+
+To give one a job, add a manipulator like this, changing only the `to` block:
 
 ```json
 {
@@ -147,7 +208,11 @@ To give one a job, add a manipulator like this to the list, changing only the `t
 ```
 
 Use `f19` for Button 7. Keep the `conditions` block exactly as it is — without it the rule
-stops being scoped to the mouse.
+stops being scoped to the mouse. These two need no factory twin, because a mouse without
+the vendor profile has nothing to send.
+
+`NOTES.md` covers the ways to get more than one action out of a single button — tap versus
+hold, chords, layers, and per-application behaviour.
 
 ---
 

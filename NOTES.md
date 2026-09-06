@@ -7,6 +7,10 @@ Everything here has been confirmed on hardware: which buttons emit what, in both
 modes, from real EventViewer captures, and every rule in `retror8-macmap.json` tested in
 place. Nothing in this document is inferred unless it says so.
 
+It records what the mouse does and what Karabiner can do about it. What the buttons are
+mapped *to* is taste, and lives in the `README` — those choices could all be different
+without a word here changing. The mouse is a playground; this is the map of it.
+
 ---
 
 ## What the mouse actually sends
