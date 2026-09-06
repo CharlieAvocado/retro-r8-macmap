@@ -52,12 +52,22 @@ device's behaviour suggests one.
 Two ways out, and only two:
 
 1. **8BitDo Ultimate Software V2 for macOS.** Assign Buttons 6 and 7 in the mouse's own
-   profile so they emit a keystroke. 8BitDo's June 2025 macOS release notes list
-   `Retro R8 Mouse N Edition` by name. Once they emit something, Karabiner sees it and
-   the normal rules apply.
-2. **Switch to left-hand mode.** This wakes 6 and 7 but is expected to mute 4 and 5 —
-   a swap, not a gain. *Unverified*; the swap is inferred from the symmetry of the two
-   chords, not from a statement in the manual.
+   profile so they emit a keystroke. Once they emit something, Karabiner sees it and the
+   normal rules apply.
+
+   A macOS build does exist, and the confusion is worth heading off because the Windows
+   build is the one people find first. It ships as `UltimateSoftwareV2.dmg`, requires
+   macOS 13.0 or above, and runs on both Intel and Apple Silicon. The macOS build
+   supports a shorter device list than the Windows one, but `Retro R8 Mouse N Edition`
+   is on it by name.
+2. **Switch to left-hand mode.** This wakes 6 and 7. Whether it mutes 4 and 5 in
+   exchange — making it a swap rather than a gain — is *unverified*; the swap is inferred
+   from the symmetry of the two chords, not from any statement in the manual. Worth
+   testing before reaching for the vendor software, because it costs nothing.
+
+   You cannot get stuck in left-hand mode. The return chord is read in firmware rather
+   than over HID, which is the same reason `Button 6` + `Button 7` can trigger the switch
+   while sending nothing to the host. Muted buttons still form chords.
 
 ## The DPI switch button
 
@@ -101,6 +111,7 @@ absence but has not been tested on this device.
 
 ## Sources
 
-- 8BitDo Retro R8 Mouse manual, Xbox Edition, English pages 01–06. The button diagram
-  and mode chords are identical on the N Edition.
+- 8BitDo Retro R8 Mouse manual, English pages 01–06. No page carries an edition name,
+  but the PDF's embedded document title is `8BitDo-Retro-R8 Mouse-Xbox-Edition`. The
+  button diagram and mode chords match the N Edition hardware.
 - 8BitDo's announcement of macOS Ultimate Software V2 support for the N Edition.
