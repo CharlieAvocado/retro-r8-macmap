@@ -248,6 +248,11 @@ way: buttons 1 to 3 are edited under one profile and 4 to 7 under another.
 than obvious: the side-button rules all work, and only the wheel press does nothing, which
 reads like a bad rule instead of a device that was never enabled.
 
+This is the one thing in the project that actually went wrong in practice, and it cost real
+time. EventViewer was no help — it reported `button3` correctly throughout, because it sits
+upstream of complex modifications and would print the same thing whether the rule worked or
+not. The fix was a checkbox.
+
 ## Settings on the Devices tab that look relevant and are not
 
 `Ignore vendor events` and `Manipulate caps lock LED` default differently across rows, and
