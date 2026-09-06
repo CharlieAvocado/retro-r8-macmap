@@ -15,25 +15,27 @@ The R8 is a composite device. It presents a pointing interface *and* a keyboard
 interface, and the side buttons use the keyboard one. That single fact drives the whole
 design.
 
-| Button | Diagram piece | Reaches macOS as | Mappable in Karabiner |
-|---|---|---|---|
-| Primary (left click) | 1 | pointing button | not needed |
-| Middle / wheel press | 2 | `pointing_button` `button3` | yes |
-| Secondary (right click) | 3 | pointing button | not needed |
-| DPI switch | 5 | nothing, in either hand mode | no — see below |
-| Button 4 | 6 | `left_option` + `close_bracket` | **yes** |
-| Button 5 | 7 | `left_option` + `open_bracket` | **yes** |
-| Button 6 | 8 | nothing; in left-hand mode, B4's codes | no — see below |
-| Button 7 | 9 | nothing; in left-hand mode, B5's codes | no — see below |
+| Button | Diagram piece | Factory firmware sends | After the app | Mappable |
+|---|---|---|---|---|
+| Primary (left click) | 1 | pointing button | unchanged | not needed |
+| Middle / wheel press | 2 | `pointing_button` `button3` | unchanged | yes |
+| Secondary (right click) | 3 | pointing button | unchanged | not needed |
+| DPI switch | 5 | nothing | nothing | never |
+| Button 4 | 6 | `left_option` + `close_bracket` | `f16` | yes |
+| Button 5 | 7 | `left_option` + `open_bracket` | `f17` | yes |
+| Button 6 | 8 | nothing | `f18` | only after the app |
+| Button 7 | 9 | nothing | `f19` | only after the app |
 
-The table describes the default right-hand mode. Left-hand mode does not add anything to
-it, it only moves the two live buttons to the other flank — see below.
+The factory column describes the default right-hand mode. Left-hand mode adds nothing, it
+only moves the two live buttons to the other flank — see below. The `f16`–`f19` column is
+the assignment this project settled on, not something the app does by itself; the reasoning
+is further down.
 
 Buttons 4 and 5 producing `‘` and `“` is not a fault. On a US layout `Option`+`]` is `‘`
 and `Option`+`[` is `“`; the mouse is sending the keystroke and macOS is rendering it
 correctly. 8BitDo shipped a keystroke where most mice ship a HID back/forward button.
 
-## Buttons 6 and 7 are not broken, and Karabiner cannot reach them
+## Why Buttons 6 and 7 are silent out of the box
 
 The R8 has two side buttons on each flank. The manual's mode chords give the design away:
 
@@ -73,46 +75,94 @@ You cannot get stranded trying it. The return chord is read in firmware rather t
 HID, which is the same reason `Button 6` + `Button 7` can trigger the switch while sending
 nothing to the host. Muted buttons still form chords.
 
-## So there is exactly one way to reach Buttons 6 and 7
+## Reaching Buttons 6 and 7: the vendor app, used sparingly
 
-**8BitDo Ultimate Software V2 for macOS.** Assign them in the mouse's own profile so they
-emit a keystroke; once they emit something, Karabiner sees it and the normal rules apply.
+**8BitDo Ultimate Software V2** is the only way to make them emit anything. A macOS build
+exists, which is worth stating plainly because the Windows build is the one people find
+first. It ships as `UltimateSoftwareV2.dmg`, requires macOS 13 or above, runs on Intel and
+Apple Silicon, and the R8 is on its supported list by name. Connect the mouse by cable —
+the app is unlikely to find it over Bluetooth.
 
-A macOS build does exist, and the confusion is worth heading off because the Windows build
-is the one people find first. It ships as `UltimateSoftwareV2.dmg`, requires macOS 13.0 or
-above, and runs on both Intel and Apple Silicon. The macOS build supports a shorter device
-list than the Windows one, but `Retro R8 Mouse N Edition` is on it by name.
+The app can assign a side button from several groups: alphanumeric, function, numpad,
+navigation, modifiers, symbols, mouse functions, shortcuts, macros, or disable. The DPI
+switch does not appear in that list at all, which is the final word on repurposing it.
 
-Without it, this mouse offers two mappable thumb buttons and a mappable wheel press. Plan
-around that rather than hunting for a trick; there isn't one.
+**Use the app for as little as possible.** Its only job here is to make a silent button
+emit something unique; Karabiner decides what that means. Concretely, all four side buttons
+are assigned to `F16` through `F19` in button order and nothing else is touched.
 
-## Two buttons need not mean two actions
+`F16`–`F19` because macOS binds nothing to them and no keyboard produces them by accident.
+They are couriers, not functions. Looking for a *useful* assignment inside the app is the
+wrong instinct — there isn't one, and you don't want one.
 
-Karabiner can get considerably more than two actions out of two buttons, which is the
-practical answer to the shortfall above:
+The profile is written into the mouse rather than held by a running helper, so the app can
+be quit, and the buttons keep working. A factory reset wipes it.
 
-- `to_if_alone` and `to_if_held_down` split each button into a tap and a hold.
-- A `simultaneous` rule on both buttons at once gives a third gesture.
-- A button held as a layer modifier changes what the wheel or the other button does.
+## Why not the app's macro feature
 
-Five or six distinct actions from two switches is realistic. None of it requires the
-vendor software.
+The app will run macros on these buttons, which looks like it could replace Karabiner
+entirely. It cannot, and taking it would cost:
+
+- **Shareability.** A macro lives in the mouse's firmware. It cannot be versioned, diffed
+  or read, and it cannot be copied out of this repository — which would defeat the point
+  of publishing anything.
+- **Conditionality.** A macro is a fixed keystroke sequence. Karabiner does per-application
+  behaviour, tap versus hold, both-buttons-at-once, and shell commands.
+- **Durability.** A factory reset wipes macros. A rule set is a file.
+- **Diagnosis.** A misbehaving macro is opaque. Karabiner shows every step in EventViewer.
+
+Macros earn their place for long literal sequences you want typed identically everywhere.
+That is not this.
+
+## Writing a profile also rewrites Buttons 4 and 5
+
+This is the trap, and it is easy to miss because it happens without being asked for.
+
+Out of the box the app's Forward and Back functions on Buttons 4 and 5 are expressed as
+`Option`+`]` and `Option`+`[` — the Windows shortcuts, which on a US Mac layout type `‘`
+and `“`. That is the whole "not designed for Macs" story in one line.
+
+Save any profile from the macOS app and those two buttons are silently rewritten to
+`Command`+`]` and `Command`+`[` — the *macOS* Forward and Back. So there are three possible
+firmware states, and a rule set written against one is dead against the others:
+
+| State | Button 4 sends | Button 5 sends |
+|---|---|---|
+| Factory | `Opt`+`]` | `Opt`+`[` |
+| App defaults, after any save | `Cmd`+`]` | `Cmd`+`[` |
+| Explicitly assigned | `f16` | `f17` |
+
+Two consequences worth carrying:
+
+- **The app alone fixes this mouse for Mac.** Anyone who only wants working Back and
+  Forward needs no Karabiner at all — install the app, save a profile, done.
+- Assigning Buttons 4 and 5 explicitly is not busywork. It pins them to a state the app
+  will not quietly change underneath you.
+
+The rule set keeps manipulators for the factory keystrokes as well as the assigned ones.
+They match different inputs so they cannot conflict, and they mean the set still works on
+a mouse that has never met the app — or on one that has been factory reset.
+
+## Getting more actions than you have buttons
+
+Karabiner can split one button into several gestures, which is worth knowing before
+concluding you have run out of buttons:
+
+- `to_if_alone` and `to_if_held_down` split a button into a tap and a hold.
+- A `simultaneous` rule on two buttons gives a gesture neither has alone.
+- A button held as a layer modifier changes what the wheel or another button does.
+
+None of it needs the vendor app, and it is the honest answer to wanting a fifth and sixth
+action out of four switches.
 
 ## The DPI switch button
 
-Cycles DPI (800 / 1200 / 1600 / 2400 / 3200 / 6400, signalled by indicator colour) and is
-handled entirely in firmware without notifying the host. Confirmed silent in EventViewer
-in both hand modes. Karabiner cannot repurpose it, and it falls into the same bucket as
-Buttons 6 and 7 — Ultimate Software or nothing.
+Cycles DPI (800 / 1200 / 1600 / 2400 / 3200 / 6400, signalled by indicator colour) entirely
+in firmware, telling the host nothing. Confirmed silent in EventViewer in both hand modes,
+and absent from the app's list of assignable buttons. There is no route to it.
 
-## The recommended architecture
-
-Where a button is silent, use Ultimate Software for the *minimum* job: make it emit some
-unique, otherwise-unused keystroke. Do the actual mapping in Karabiner.
-
-This keeps the interesting logic in a file that can be read, versioned, and shared, and
-leans on the vendor tool only for the one thing Karabiner cannot do. It also means the
-mouse profile stays simple enough to rebuild from memory after a factory reset.
+The levels themselves can be edited in the app, so the nearest thing to a fix is collapsing
+the cycle until pressing the button stops mattering.
 
 ## Why `device_if` and not `device_unless`
 
@@ -127,6 +177,14 @@ politeness here, it is correctness, and it has to name the device rather than ex
 
 The `README` carries the identifiers and what to do if yours differ.
 
+**The hazard runs the other way too, and it is not hypothetical.** The sibling keyboard
+project scopes all of its rules with `device_unless is_built_in_keyboard`, which excludes a
+laptop keyboard and nothing else — this mouse included. Those rules currently produce
+`F13`–`F16` but never *match* on them, so nothing collides today. The moment a rule with
+`f16` through `f19` in its `from` is added to that project, this mouse would start firing
+it. If that ever happens, the fix is to add a `device_unless` for the mouse's IDs there,
+not to move this project off the F-keys.
+
 Karabiner draws the mouse as a single row with a keyboard-over-mouse icon and the adapter
 as two rows, one per interface. The list also changes as devices come and go. That is
 display, not behaviour — do not read meaning into which icons appear.
@@ -134,19 +192,18 @@ display, not behaviour — do not read meaning into which icons appear.
 ## Rule order, and why it barely matters here
 
 The forward-delete rule sits above the plain Delete rule. Karabiner takes the first
-manipulator that matches, so a broad rule placed above a narrow one hides it.
+manipulator that matches, so a broad rule above a narrow one hides it.
 
-In this set the ordering is belt-and-braces rather than load-bearing. `mandatory` means
-*exactly these modifiers*, so `Option`+`[` and `Ctrl`+`Option`+`[` cannot both match the
-same manipulator; either order would work. It is written this way so that adding an
-`optional` clause later — which would make the plain rule greedy — does not silently
-break forward-delete. Keep specific above general and the trap never opens.
+Here the ordering is belt-and-braces rather than load-bearing. `mandatory` means *exactly
+these modifiers*, so a bare `F17` and `Ctrl`+`F17` cannot both match the same manipulator;
+either order would work. It is written this way so that adding an `optional` clause later —
+which would make the plain rule greedy — cannot silently break forward-delete. Keep
+specific above general and the trap never opens.
 
-`optional: ["caps_lock"]` appears on every rule. Without it, having caps lock on stops
-every rule from matching, which is a confusing failure to diagnose.
+`optional: ["caps_lock"]` appears on every rule. Without it, having caps lock on stops every
+rule from matching, which is a miserable thing to diagnose.
 
-The forward-delete rule asks for `control` rather than `left_control`, so either control
-key works. `left_option` stays exact, because that is specifically what the mouse sends.
+Forward-delete asks for `control` rather than `left_control`, so either control key works.
 
 Karabiner merges modifier flags across devices, so the `Ctrl` may be held on any keyboard
 while the button press arrives from the mouse — the same way holding shift on one keyboard
@@ -155,10 +212,10 @@ whose behaviour was not obvious in advance.
 
 `Ctrl` rather than `Cmd` is deliberate. On macOS the control key is where text-editing
 bindings live — `Ctrl`+`D` is already forward-delete in most text fields — while `Cmd`
-belongs to application commands, and `Cmd`+`Delete` already means delete to the start of
-the line. Forward-delete is a text-editing operation, so it goes on the text-editing
-modifier. Neither combination collides with anything, so this is a matter of fitting the
-platform's habits rather than avoiding a conflict.
+belongs to application commands, and `Cmd`+`Delete` already means delete to the start of the
+line. Forward-delete is a text-editing operation, so it goes on the text-editing modifier.
+Neither combination collides with anything, so this is about fitting the platform's habits
+rather than avoiding a conflict.
 
 ## Settings on the Devices tab that look relevant and are not
 

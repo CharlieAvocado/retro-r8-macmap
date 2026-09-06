@@ -2,11 +2,11 @@
   "description": "8BitDo Retro R8 Mouse — MacMap",
   "manipulators": [
     {
-      "description": "B5 + Ctrl (sends Opt+[) -> Delete Forward  [must precede the plain B5 rule]",
+      "description": "B5 + Ctrl (F17) -> Delete Forward  [must precede the plain B5 rule]",
       "from": {
-        "key_code": "open_bracket",
+        "key_code": "f17",
         "modifiers": {
-          "mandatory": ["left_option", "control"],
+          "mandatory": ["control"],
           "optional": ["caps_lock"]
         }
       },
@@ -23,13 +23,10 @@
       ]
     },
     {
-      "description": "B5 (sends Opt+[) -> Delete (backspace)",
+      "description": "B5 (F17) -> Delete (backspace)",
       "from": {
-        "key_code": "open_bracket",
-        "modifiers": {
-          "mandatory": ["left_option"],
-          "optional": ["caps_lock"]
-        }
+        "key_code": "f17",
+        "modifiers": { "optional": ["caps_lock"] }
       },
       "to": [{ "key_code": "delete_or_backspace" }],
       "type": "basic",
@@ -44,13 +41,10 @@
       ]
     },
     {
-      "description": "B4 (sends Opt+]) -> Back (Cmd+[)",
+      "description": "B4 (F16) -> Back (Cmd+[)",
       "from": {
-        "key_code": "close_bracket",
-        "modifiers": {
-          "mandatory": ["left_option"],
-          "optional": ["caps_lock"]
-        }
+        "key_code": "f16",
+        "modifiers": { "optional": ["caps_lock"] }
       },
       "to": [
         {
@@ -76,6 +70,74 @@
         "modifiers": { "optional": ["caps_lock"] }
       },
       "to": [{ "key_code": "return_or_enter" }],
+      "type": "basic",
+      "conditions": [
+        {
+          "type": "device_if",
+          "identifiers": [
+            { "vendor_id": 11720, "product_id": 20997 },
+            { "vendor_id": 11720, "product_id": 20998 }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "FACTORY FIRMWARE — B5 + Ctrl (Opt+[) -> Delete Forward  [inert once the app is used]",
+      "from": {
+        "key_code": "open_bracket",
+        "modifiers": {
+          "mandatory": ["left_option", "control"],
+          "optional": ["caps_lock"]
+        }
+      },
+      "to": [{ "key_code": "delete_forward" }],
+      "type": "basic",
+      "conditions": [
+        {
+          "type": "device_if",
+          "identifiers": [
+            { "vendor_id": 11720, "product_id": 20997 },
+            { "vendor_id": 11720, "product_id": 20998 }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "FACTORY FIRMWARE — B5 (Opt+[) -> Delete (backspace)  [inert once the app is used]",
+      "from": {
+        "key_code": "open_bracket",
+        "modifiers": {
+          "mandatory": ["left_option"],
+          "optional": ["caps_lock"]
+        }
+      },
+      "to": [{ "key_code": "delete_or_backspace" }],
+      "type": "basic",
+      "conditions": [
+        {
+          "type": "device_if",
+          "identifiers": [
+            { "vendor_id": 11720, "product_id": 20997 },
+            { "vendor_id": 11720, "product_id": 20998 }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "FACTORY FIRMWARE — B4 (Opt+]) -> Back (Cmd+[)  [inert once the app is used]",
+      "from": {
+        "key_code": "close_bracket",
+        "modifiers": {
+          "mandatory": ["left_option"],
+          "optional": ["caps_lock"]
+        }
+      },
+      "to": [
+        {
+          "key_code": "open_bracket",
+          "modifiers": ["left_command"]
+        }
+      ],
       "type": "basic",
       "conditions": [
         {
