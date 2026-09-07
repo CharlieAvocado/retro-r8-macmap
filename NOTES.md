@@ -185,11 +185,13 @@ Spending a button as a layer instead, which is what makes the wheel reachable:
   Button 7 held ─┬─ Button 4 ............... action A
    (as a layer)  ├─ Button 5 ............... action B
                  ├─ Button 6 ............... action C
-                 ├─ wheel up ............... action D
-                 └─ wheel down ............. action E
+                 └─ any keyboard key ....... action D, E, F ...
 
   Button 7 alone ─── nothing. The layer costs it every action of its own.
 ```
+
+A layer is not limited to the mouse's own buttons. The variable it sets is visible to every
+manipulator in the set, so holding a thumb button can change what the keyboard does too.
 
 **Why a single headline number is misleading.** The mechanisms compete for the same
 presses. A button spent as a layer modifier no longer has a tap or a hold. A pair committed
@@ -199,12 +201,18 @@ number that cannot all be true at once.
 
 The arithmetic that does hold: tap and hold across the four side buttons is eight, the wheel
 press makes nine, and one modifier variant across the four side buttons brings it to
-thirteen. That much is comfortable and needs no layer and no chord. Past roughly a dozen the
-gestures start to feel like a chord progression rather than a mouse.
+thirteen — with no layer and no chord spent yet. Adding a second modifier, the chord pairs
+and a layer takes it well past twenty.
+
+There is no ceiling worth respecting here. A DAW user mapping transport and track controls
+in Logic Pro, or anyone driving an application with a large fixed command set, has a real
+reason to want every gesture the hardware can express. Build as many as are useful; the only
+genuine cost is the hand having to remember them.
 
 Application scope is the mechanism worth reaching for first, because it is the only one that
-costs no gesture at all. The same press does one thing in a browser and another in Finder,
-and the hand never learns anything new.
+costs no gesture at all. The same press does one thing in a browser and another in Logic,
+and the hand never learns anything new. For a large command set this is usually the answer:
+one modest set of gestures, redefined per application.
 
 None of this needs the vendor app. It is all in the rule set.
 
@@ -226,11 +234,33 @@ and little else. Four independent switches give six chordable pairs on top of th
 taps and holds, and any one of them can be spent as a layer. Independent switches multiply;
 a D-pad's directions only add.
 
+## What the scroll wheel can and cannot do
+
+The wheel press is an ordinary `pointing_button` and is fully mappable. **Scroll direction
+is not.** Karabiner has no way to trigger on a scroll event, so there is no rule that reads
+"scroll up does X". `pointing_button` runs `button1` through `button255` and none of them is
+a wheel direction; the feature request for it was closed without being implemented, with the
+maintainers stating plainly that no option exists to get scroll direction.
+
+What is available sits outside the manipulator system, in `Karabiner-Elements → Devices`
+under the mouse's own settings:
+
+- `Flip mouse vertical wheel` and `Flip mouse horizontal wheel`, to reverse a direction.
+- `Swap mouse wheels`, to exchange vertical and horizontal.
+- `Wheels multiplier`, to change scroll speed for this mouse alone without touching the
+  trackpad. Worth knowing if macOS scroll speed is set globally and the mouse wants
+  something different.
+
+There is also `mouse_motion_to_scroll`, which turns cursor movement into scrolling while a
+key is held. That is the reverse of what most people want here, but it is the one place
+where scrolling and the rule set meet.
+
 ## The DPI switch button
 
 Cycles DPI (800 / 1200 / 1600 / 2400 / 3200 / 6400, signalled by indicator colour) entirely
 in firmware, telling the host nothing. Confirmed silent in EventViewer in both hand modes,
-and absent from the app's list of assignable buttons. No route to it could be found.
+and absent from the app's list of assignable buttons. No route to it could be found, which
+is not the same as proving there is none.
 
 The levels themselves *can* be edited in the app, which allows any six values. The nearest
 thing to switching the button off is setting all six the same, or separating them by a

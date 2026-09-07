@@ -14,11 +14,13 @@ records about a mouse that is far stranger than it looks.
 is affected.** This matters more here than on a keyboard: the side buttons arrive as
 *keyboard* events, and an unscoped rule would eat real keystrokes.
 
-Two files do the work:
+The files:
 
 | File | What |
 |---|---|
 | `retror8-macmap.json` | The rule set. A bare `{description, manipulators}` object |
+| `RECIPES.md` | Ready-to-paste actions, and a worksheet for planning your own layout |
+| `builder.html` | An offline page that assembles the rule set from your choices |
 | `NOTES.md` | The lab notebook — what the hardware sends, why two of the buttons are silent out of the box, why left-hand mode is not the answer, and why each rule is shaped the way it is. Read it before changing anything |
 
 ---
@@ -140,38 +142,15 @@ by its `description`, and change only its `to` block.
 | Wheel press | `Middle button / wheel press -> Return` |
 | Buttons 6 and 7 | not present yet — see below |
 
-### A menu of `to` values
+Two places to get the replacement from:
 
-Paste any of these in as the `to` block. They are all plain macOS behaviour; nothing here
-needs extra software.
-
-| Action | `to` |
-|---|---|
-| Back | `[{ "key_code": "open_bracket", "modifiers": ["left_command"] }]` |
-| Forward | `[{ "key_code": "close_bracket", "modifiers": ["left_command"] }]` |
-| Page up | `[{ "key_code": "page_up" }]` |
-| Page down | `[{ "key_code": "page_down" }]` |
-| Delete (backspace) | `[{ "key_code": "delete_or_backspace" }]` |
-| Delete forward | `[{ "key_code": "delete_forward" }]` |
-| Copy | `[{ "key_code": "c", "modifiers": ["left_command"] }]` |
-| Paste | `[{ "key_code": "v", "modifiers": ["left_command"] }]` |
-| Undo | `[{ "key_code": "z", "modifiers": ["left_command"] }]` |
-| Redo | `[{ "key_code": "z", "modifiers": ["left_command", "left_shift"] }]` |
-| Previous tab | `[{ "key_code": "tab", "modifiers": ["left_control", "left_shift"] }]` |
-| Next tab | `[{ "key_code": "tab", "modifiers": ["left_control"] }]` |
-| Previous desktop | `[{ "key_code": "left_arrow", "modifiers": ["left_control"] }]` |
-| Next desktop | `[{ "key_code": "right_arrow", "modifiers": ["left_control"] }]` |
-| Mission Control | `[{ "key_code": "mission_control" }]` |
-| Launchpad | `[{ "key_code": "launchpad" }]` |
-| Spotlight | `[{ "key_code": "spacebar", "modifiers": ["left_command"] }]` |
-| Screenshot area | `[{ "key_code": "4", "modifiers": ["left_command", "left_shift"] }]` |
-| Zoom in | `[{ "key_code": "equal_sign", "modifiers": ["left_command"] }]` |
-| Zoom out | `[{ "key_code": "hyphen", "modifiers": ["left_command"] }]` |
-| Close window | `[{ "key_code": "w", "modifiers": ["left_command"] }]` |
-| Volume up | `[{ "consumer_key_code": "volume_increment" }]` |
-| Volume down | `[{ "consumer_key_code": "volume_decrement" }]` |
-| Mute | `[{ "consumer_key_code": "mute" }]` |
-| Play / pause | `[{ "consumer_key_code": "play_or_pause" }]` |
+- `RECIPES.md` — around fifty ready-to-paste blocks, each in its own copy box: navigation,
+  editing, tabs, spaces, media, shell commands, tap-versus-hold, and per-application rules.
+  It also carries a worksheet listing every input the mouse can offer, with room to record
+  what you want from each.
+- `builder.html` — the same thing interactively. Open it in a browser, pick an action for
+  each button, and it assembles the complete file. No installation, and nothing leaves the
+  page.
 
 **If you change Button 4 or Button 5, change its `FACTORY FIRMWARE` twin too.** Those three
 manipulators exist so the set still works on a mouse that has never met the vendor app, or

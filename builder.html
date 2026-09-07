@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{color-scheme:light dark;}
+  body{margin:0;font:14px system-ui,sans-serif;background:#faf9f7;}
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+</style>
+<title>Retro R8 Rule Builder</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --shell:#EDE8DC;      /* the N Edition's off-white shell */
+    --panel:#F7F4EC;
+    --raise:#FFFFFF;
+    --ink:#1C1A16;
+    --ink-2:#5E584D;
+    --ink-3:#8A8377;
+    --flank:#B4ADA0;      /* grey sides and wheel */
+    --line:#D6CFC0;
+    --accent:#C0332C;     /* the red side buttons */
+    --accent-soft:#F0DAD6;
+    --accent-ink:#FFFFFF;
+    --code-bg:#26231D;
+    --code-ink:#E8E2D4;
+    --ok:#4A7A46;
+    --radius:3px;
+    --gap:20px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --shell:#16151A;
+      --panel:#1D1C22;
+      --raise:#25242C;
+      --ink:#EDE9DF;
+      --ink-2:#A9A296;
+      --ink-3:#7C766B;
+      --flank:#4A4741;
+      --line:#33313A;
+      --accent:#E2564E;
+      --accent-soft:#3A2220;
+      --accent-ink:#17161A;
+      --code-bg:#101015;
+      --code-ink:#DCD6C8;
+      --ok:#7FB07A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --shell:#16151A; --panel:#1D1C22; --raise:#25242C;
+    --ink:#EDE9DF; --ink-2:#A9A296; --ink-3:#7C766B;
+    --flank:#4A4741; --line:#33313A;
+    --accent:#E2564E; --accent-soft:#3A2220; --accent-ink:#17161A;
+    --code-bg:#101015; --code-ink:#DCD6C8; --ok:#7FB07A;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--shell);
+    color:var(--ink);
+    font-family:'Archivo',system-ui,-apple-system,'Helvetica Neue',sans-serif;
+    font-size:15px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  code,kbd,.mono{font-family:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 64px;}
+
+  header.top{
+    display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 24px;
+    padding-bottom:18px;margin-bottom:24px;border-bottom:2px solid var(--ink);
+  }
+  .brandmark{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    display:block;margin-bottom:4px;
+  }
+  h1{
+    font-size:clamp(26px,4.4vw,40px);font-weight:700;letter-spacing:-.02em;
+    margin:0;line-height:1.05;text-wrap:balance;
+  }
+  .sub{color:var(--ink-2);max-width:56ch;margin:0;font-size:14.5px;}
+  .themer{
+    margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    letter-spacing:.1em;text-transform:uppercase;background:none;color:var(--ink-2);
+    border:1px solid var(--line);border-radius:var(--radius);padding:7px 11px;cursor:pointer;
+  }
+  .themer:hover{color:var(--ink);border-color:var(--ink-3);}
+
+  .cols{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:32px;align-items:start;}
+  @media (max-width:900px){ .cols{grid-template-columns:1fr;} }
+
+  h2{
+    font-size:12px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--ink-3);margin:0 0 12px;
+  }
+
+  /* ---- schematic ---- */
+  .schematic{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px;margin-bottom:24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;
+  }
+  .schematic svg{flex:0 0 auto;}
+  .legend{font-size:13px;color:var(--ink-2);min-width:200px;flex:1;}
+  .legend p{margin:0 0 6px;}
+  .legend .pc{color:var(--ink-3);font-family:'IBM Plex Mono',monospace;font-size:11.5px;}
+  .hot{fill:var(--accent);}
+  .cold{fill:var(--flank);}
+  .shellpath{fill:var(--panel);stroke:var(--ink-3);stroke-width:1.5;}
+
+  /* ---- rack ---- */
+  .rack{display:flex;flex-direction:column;gap:10px;}
+  .slot{
+    background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--flank);
+    border-radius:var(--radius);padding:13px 15px;
+  }
+  .slot.live{border-left-color:var(--accent);}
+  .slot-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:9px;}
+  .slot-name{font-weight:600;font-size:15px;}
+  .trigger{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-2);
+    background:var(--shell);border:1px solid var(--line);border-radius:2px;padding:1px 6px;
+  }
+  .piece{font-size:11px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;margin-left:auto;}
+
+  .variant{display:flex;gap:8px;align-items:center;margin-bottom:7px;flex-wrap:wrap;}
+  .variant:last-child{margin-bottom:0;}
+  select,input[type=text],input[type=number]{
+    font-family:'Archivo',sans-serif;font-size:14px;color:var(--ink);
+    background:var(--raise);border:1px solid var(--line);border-radius:var(--radius);
+    padding:7px 9px;min-width:0;
+  }
+  select:focus-visible,input:focus-visible,button:focus-visible{
+    outline:2px solid var(--accent);outline-offset:1px;
+  }
+  select.act{flex:1 1 190px;}
+  select.mod{flex:0 0 122px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
+  .kill{
+    flex:0 0 auto;background:none;border:1px solid var(--line);color:var(--ink-3);
+    border-radius:var(--radius);width:28px;height:32px;cursor:pointer;font-size:15px;line-height:1;
+  }
+  .kill:hover{border-color:var(--accent);color:var(--accent);}
+  .addv{
+    background:none;border:1px dashed var(--line);color:var(--ink-2);
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.05em;
+    border-radius:var(--radius);padding:5px 10px;cursor:pointer;margin-top:8px;
+  }
+  .addv:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* ---- options ---- */
+  .opts{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:15px;margin-top:22px;
+  }
+  .optrow{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;}
+  .optrow:last-child{margin-bottom:0;}
+  .optrow label{font-size:13.5px;color:var(--ink-2);}
+  .optrow strong{color:var(--ink);font-weight:600;display:block;font-size:14px;}
+  input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;margin-top:3px;flex:0 0 auto;}
+  .ids{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+  .idf{display:flex;flex-direction:column;gap:4px;}
+  .idf span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);}
+  .idf input{width:110px;font-family:'IBM Plex Mono',monospace;font-size:13px;}
+
+  /* ---- output ---- */
+  .out{position:sticky;top:18px;}
+  .outhead{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .outhead h2{margin:0;}
+  .count{
+    margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    color:var(--ink-3);letter-spacing:.06em;
+  }
+  .copy{
+    background:var(--accent);color:var(--accent-ink);border:none;border-radius:var(--radius);
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:13.5px;
+    padding:9px 16px;cursor:pointer;
+  }
+  .copy:hover{filter:brightness(1.08);}
+  .copy.done{background:var(--ok);}
+  pre{
+    background:var(--code-bg);color:var(--code-ink);border-radius:var(--radius);
+    margin:0;padding:15px;overflow:auto;max-height:60vh;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.5;
+    tab-size:2;
+  }
+  .note{font-size:12.5px;color:var(--ink-3);margin:12px 0 0;max-width:60ch;}
+  .note code{font-size:11.5px;color:var(--ink-2);}
+  .warn{
+    border-left:3px solid var(--accent);background:var(--accent-soft);color:var(--ink);
+    padding:10px 13px;border-radius:0 var(--radius) var(--radius) 0;font-size:13px;margin-top:14px;
+  }
+  a{color:var(--accent);}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <span class="brandmark">8BitDo Retro R8 &middot; N Edition</span>
+      <h1>Retro R8 Rule Builder</h1>
+    </div>
+    <button class="themer" id="themer" type="button">Theme</button>
+  </header>
+
+  <p class="sub" style="margin-bottom:24px;">Pick what each button should do. The complete
+  Karabiner rule set assembles below, scoped to this mouse alone. Nothing leaves this page.</p>
+
+  <div class="cols">
+    <div>
+      <div class="schematic">
+        <svg width="132" height="186" viewBox="0 0 132 186" role="img" aria-label="Top-down view of the mouse showing the four side buttons">
+          <path class="shellpath" d="M66 6 C96 6 116 30 116 68 L116 128 C116 164 96 180 66 180 C36 180 16 164 16 128 L16 68 C16 30 36 6 66 6 Z"/>
+          <line x1="66" y1="8" x2="66" y2="72" stroke="var(--ink-3)" stroke-width="1.2"/>
+          <rect x="59" y="26" width="14" height="30" rx="6" fill="var(--flank)"/>
+          <rect id="s-b4" class="cold" x="7" y="60" width="12" height="26" rx="4"/>
+          <rect id="s-b5" class="cold" x="7" y="92" width="12" height="26" rx="4"/>
+          <rect id="s-b6" class="cold" x="113" y="60" width="12" height="26" rx="4"/>
+          <rect id="s-b7" class="cold" x="113" y="92" width="12" height="26" rx="4"/>
+          <text x="30" y="77" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--ink-3)">B4</text>
+          <text x="30" y="109" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--ink-3)">B5</text>
+          <text x="88" y="77" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--ink-3)">B6</text>
+          <text x="88" y="109" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--ink-3)">B7</text>
+        </svg>
+        <div class="legend">
+          <p><strong>B4</strong> and <strong>B5</strong> are the left flank, live from the
+          factory. <strong>B6</strong> and <strong>B7</strong> are the right flank and send
+          nothing until you assign them in Ultimate&nbsp;Software.</p>
+          <p class="pc">Manual diagram pieces 6, 7, 8, 9</p>
+        </div>
+      </div>
+
+      <h2>Buttons</h2>
+      <div class="rack" id="rack"></div>
+
+      <div class="opts">
+        <div class="optrow">
+          <input type="checkbox" id="factory" checked>
+          <label for="factory">
+            <strong>Include factory-firmware rules</strong>
+            Adds duplicates of the Button&nbsp;4 and&nbsp;5 rules matching the keystrokes an
+            unconfigured mouse sends. Keeps the set working after a factory reset.
+          </label>
+        </div>
+        <div class="optrow">
+          <input type="checkbox" id="capslock" checked>
+          <label for="capslock">
+            <strong>Tolerate caps lock</strong>
+            Adds <code class="mono">optional: ["caps_lock"]</code> so rules still fire with
+            caps lock on.
+          </label>
+        </div>
+        <div class="optrow" style="display:block;">
+          <strong style="display:block;margin-bottom:8px;">Device identifiers</strong>
+          <div class="ids">
+            <div class="idf"><span>Vendor</span><input type="number" id="vid" value="11720"></div>
+            <div class="idf"><span>Product</span><input type="number" id="pid1" value="20997"></div>
+            <div class="idf"><span>Product (adapter)</span><input type="number" id="pid2" value="20998"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="out">
+      <div class="outhead">
+        <h2>retror8-macmap.json</h2>
+        <span class="count" id="count"></span>
+        <button class="copy" id="copy" type="button">Copy</button>
+      </div>
+      <pre id="json"></pre>
+      <p class="note">Paste into <code>Karabiner-Elements &rarr; Complex Modifications &rarr;
+      Add your own rule</code>, clearing the default contents first.</p>
+      <div class="warn" id="warn" hidden></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ACTIONS = [
+    ["Nothing", [["none","— unassigned —",null]]],
+    ["Navigation", [
+      ["back","Back",[{key_code:"open_bracket",modifiers:["left_command"]}]],
+      ["fwd","Forward",[{key_code:"close_bracket",modifiers:["left_command"]}]],
+      ["pgup","Page up",[{key_code:"page_up"}]],
+      ["pgdn","Page down",[{key_code:"page_down"}]],
+      ["top","Top of document",[{key_code:"up_arrow",modifiers:["left_command"]}]],
+      ["bot","Bottom of document",[{key_code:"down_arrow",modifiers:["left_command"]}]]
+    ]],
+    ["Editing", [
+      ["del","Delete (backspace)",[{key_code:"delete_or_backspace"}]],
+      ["delf","Delete forward",[{key_code:"delete_forward"}]],
+      ["copy","Copy",[{key_code:"c",modifiers:["left_command"]}]],
+      ["cut","Cut",[{key_code:"x",modifiers:["left_command"]}]],
+      ["paste","Paste",[{key_code:"v",modifiers:["left_command"]}]],
+      ["pasteplain","Paste without formatting",[{key_code:"v",modifiers:["left_command","left_option","left_shift"]}]],
+      ["undo","Undo",[{key_code:"z",modifiers:["left_command"]}]],
+      ["redo","Redo",[{key_code:"z",modifiers:["left_command","left_shift"]}]],
+      ["selall","Select all",[{key_code:"a",modifiers:["left_command"]}]],
+      ["find","Find",[{key_code:"f",modifiers:["left_command"]}]],
+      ["save","Save",[{key_code:"s",modifiers:["left_command"]}]],
+      ["ret","Return",[{key_code:"return_or_enter"}]],
+      ["esc","Escape",[{key_code:"escape"}]]
+    ]],
+    ["Tabs and windows", [
+      ["prevtab","Previous tab",[{key_code:"tab",modifiers:["left_control","left_shift"]}]],
+      ["nexttab","Next tab",[{key_code:"tab",modifiers:["left_control"]}]],
+      ["newtab","New tab",[{key_code:"t",modifiers:["left_command"]}]],
+      ["reopen","Reopen closed tab",[{key_code:"t",modifiers:["left_command","left_shift"]}]],
+      ["close","Close window or tab",[{key_code:"w",modifiers:["left_command"]}]],
+      ["appsw","Switch application",[{key_code:"tab",modifiers:["left_command"]}]]
+    ]],
+    ["Spaces", [
+      ["mc","Mission Control",[{key_code:"mission_control"}]],
+      ["appwin","Application windows",[{key_code:"down_arrow",modifiers:["left_control"]}]],
+      ["prevdesk","Previous desktop",[{key_code:"left_arrow",modifiers:["left_control"]}]],
+      ["nextdesk","Next desktop",[{key_code:"right_arrow",modifiers:["left_control"]}]],
+      ["lpad","Launchpad",[{key_code:"launchpad"}]]
+    ]],
+    ["System", [
+      ["spot","Spotlight",[{key_code:"spacebar",modifiers:["left_command"]}]],
+      ["shot4","Screenshot of an area",[{key_code:"4",modifiers:["left_command","left_shift"]}]],
+      ["shot3","Screenshot of the screen",[{key_code:"3",modifiers:["left_command","left_shift"]}]],
+      ["lock","Lock screen",[{key_code:"q",modifiers:["left_control","left_command"]}]],
+      ["zin","Zoom in",[{key_code:"equal_sign",modifiers:["left_command"]}]],
+      ["zout","Zoom out",[{key_code:"hyphen",modifiers:["left_command"]}]],
+      ["brup","Screen brighter",[{key_code:"display_brightness_increment"}]],
+      ["brdn","Screen dimmer",[{key_code:"display_brightness_decrement"}]]
+    ]],
+    ["Media", [
+      ["volup","Volume up",[{consumer_key_code:"volume_increment"}]],
+      ["voldn","Volume down",[{consumer_key_code:"volume_decrement"}]],
+      ["mute","Mute",[{consumer_key_code:"mute"}]],
+      ["play","Play or pause",[{consumer_key_code:"play_or_pause"}]],
+      ["nextrk","Next track",[{consumer_key_code:"scan_next_track"}]],
+      ["prevtrk","Previous track",[{consumer_key_code:"scan_previous_track"}]]
+    ]],
+    ["Other", [
+      ["disable","Disable the button",[{key_code:"vk_none"}]]
+    ]]
+  ];
+
+  var BY_KEY = {};
+  ACTIONS.forEach(function(g){ g[1].forEach(function(a){ BY_KEY[a[0]] = {label:a[1], to:a[2]}; }); });
+
+  var MODS = [
+    ["", "no modifier"],
+    ["control", "Ctrl +"],
+    ["option", "Opt +"],
+    ["command", "Cmd +"],
+    ["shift", "Shift +"]
+  ];
+  var MODLABEL = {control:"Ctrl", option:"Opt", command:"Cmd", shift:"Shift"};
+
+  // Opens in the configuration the repository ships with.
+  var SLOTS = [
+    {id:"b4", name:"Button 4", piece:"piece 6 · front left", from:{key_code:"f16"}, trig:"f16",
+     factory:{key_code:"close_bracket", mods:["left_option"]},
+     variants:[{mod:"", act:"back"}]},
+    {id:"b5", name:"Button 5", piece:"piece 7 · rear left", from:{key_code:"f17"}, trig:"f17",
+     factory:{key_code:"open_bracket", mods:["left_option"]},
+     variants:[{mod:"", act:"del"},{mod:"control", act:"delf"}]},
+    {id:"b6", name:"Button 6", piece:"piece 8 · front right", from:{key_code:"f18"}, trig:"f18",
+     factory:null, variants:[{mod:"", act:"none"}]},
+    {id:"b7", name:"Button 7", piece:"piece 9 · rear right", from:{key_code:"f19"}, trig:"f19",
+     factory:null, variants:[{mod:"", act:"none"}]},
+    {id:"wheel", name:"Wheel press", piece:"piece 2 · middle", from:{pointing_button:"button3"}, trig:"button3",
+     factory:null, variants:[{mod:"", act:"ret"}]}
+  ];
+
+  var rack = document.getElementById("rack");
+  var out = document.getElementById("json");
+  var countEl = document.getElementById("count");
+  var warnEl = document.getElementById("warn");
+
+  function optionsHTML(selected){
+    var h = "";
+    ACTIONS.forEach(function(g){
+      h += '<optgroup label="' + g[0] + '">';
+      g[1].forEach(function(a){
+        h += '<option value="' + a[0] + '"' + (a[0] === selected ? " selected" : "") + ">" + a[1] + "</option>";
+      });
+      h += "</optgroup>";
+    });
+    return h;
+  }
+  function modHTML(selected){
+    return MODS.map(function(m){
+      return '<option value="' + m[0] + '"' + (m[0] === selected ? " selected" : "") + ">" + m[1] + "</option>";
+    }).join("");
+  }
+
+  function render(){
+    rack.innerHTML = "";
+    SLOTS.forEach(function(slot){
+      var live = slot.variants.some(function(v){ return v.act !== "none"; });
+      var el = document.createElement("div");
+      el.className = "slot" + (live ? " live" : "");
+      var head = '<div class="slot-head"><span class="slot-name">' + slot.name + '</span>' +
+                 '<span class="trigger">' + slot.trig + '</span>' +
+                 '<span class="piece">' + slot.piece + "</span></div>";
+      var body = slot.variants.map(function(v, i){
+        return '<div class="variant">' +
+          '<select class="mod" data-slot="' + slot.id + '" data-i="' + i + '" data-f="mod" aria-label="Modifier for ' + slot.name + '">' + modHTML(v.mod) + "</select>" +
+          '<select class="act" data-slot="' + slot.id + '" data-i="' + i + '" data-f="act" aria-label="Action for ' + slot.name + '">' + optionsHTML(v.act) + "</select>" +
+          (slot.variants.length > 1
+            ? '<button class="kill" type="button" data-slot="' + slot.id + '" data-i="' + i + '" title="Remove this variant" aria-label="Remove variant">&times;</button>'
+            : "") +
+          "</div>";
+      }).join("");
+      el.innerHTML = head + body +
+        '<button class="addv" type="button" data-add="' + slot.id + '">+ modifier variant</button>';
+      rack.appendChild(el);
+      var sw = document.getElementById("s-" + slot.id);
+      if (sw) sw.setAttribute("class", live ? "hot" : "cold");
+    });
+    build();
+  }
+
+  function ids(){
+    var v = parseInt(document.getElementById("vid").value, 10);
+    var p1 = parseInt(document.getElementById("pid1").value, 10);
+    var p2 = parseInt(document.getElementById("pid2").value, 10);
+    var list = [];
+    if (!isNaN(v) && !isNaN(p1)) list.push({vendor_id:v, product_id:p1});
+    if (!isNaN(v) && !isNaN(p2) && p2 !== p1) list.push({vendor_id:v, product_id:p2});
+    return list;
+  }
+
+  function conditions(){
+    return [{type:"device_if", identifiers: ids()}];
+  }
+
+  function modifiers(mandatory){
+    var caps = document.getElementById("capslock").checked;
+    var m = {};
+    if (mandatory && mandatory.length) m.mandatory = mandatory.slice();
+    if (caps) m.optional = ["caps_lock"];
+    return Object.keys(m).length ? m : null;
+  }
+
+  function manipulator(desc, fromBase, mandatory, to){
+    var from = {};
+    Object.keys(fromBase).forEach(function(k){ from[k] = fromBase[k]; });
+    var mods = modifiers(mandatory);
+    if (mods) from.modifiers = mods;
+    return {description:desc, from:from, to:to, type:"basic", conditions:conditions()};
+  }
+
+  function build(){
+    var man = [];
+    var warnings = [];
+
+    SLOTS.forEach(function(slot){
+      // Specific before general: a modifier variant must precede the bare rule.
+      var vs = slot.variants.slice().sort(function(a, b){
+        return (b.mod ? 1 : 0) - (a.mod ? 1 : 0);
+      });
+      var seen = {};
+      vs.forEach(function(v){
+        if (v.act === "none") return;
+        if (seen[v.mod]) { warnings.push(slot.name + " has two rules for the same press."); return; }
+        seen[v.mod] = true;
+        var label = slot.name + (v.mod ? " + " + MODLABEL[v.mod] : "") +
+                    " (" + slot.trig + ") -> " + BY_KEY[v.act].label;
+        man.push(manipulator(label, slot.from, v.mod ? [v.mod] : [], BY_KEY[v.act].to));
+      });
+    });
+
+    if (document.getElementById("factory").checked){
+      SLOTS.forEach(function(slot){
+        if (!slot.factory) return;
+        var vs = slot.variants.slice().sort(function(a, b){
+          return (b.mod ? 1 : 0) - (a.mod ? 1 : 0);
+        });
+        vs.forEach(function(v){
+          if (v.act === "none") return;
+          var mandatory = slot.factory.mods.concat(v.mod ? [v.mod] : []);
+          var label = "FACTORY FIRMWARE — " + slot.name + (v.mod ? " + " + MODLABEL[v.mod] : "") +
+                      " -> " + BY_KEY[v.act].label;
+          man.push(manipulator(label, {key_code:slot.factory.key_code}, mandatory, BY_KEY[v.act].to));
+        });
+      });
+    }
+
+    var doc = {description:"8BitDo Retro R8 Mouse — MacMap", manipulators:man};
+    out.textContent = JSON.stringify(doc, null, 2);
+    countEl.textContent = man.length + (man.length === 1 ? " manipulator" : " manipulators");
+
+    if (!ids().length) warnings.push("No device identifiers set — these rules would apply to every device.");
+    var uniq = warnings.filter(function(w, i){ return warnings.indexOf(w) === i; });
+    warnEl.hidden = !uniq.length;
+    warnEl.textContent = uniq.join(" ");
+  }
+
+  rack.addEventListener("change", function(e){
+    var t = e.target;
+    if (!t.dataset || !t.dataset.slot) return;
+    var slot = SLOTS.filter(function(s){ return s.id === t.dataset.slot; })[0];
+    slot.variants[+t.dataset.i][t.dataset.f] = t.value;
+    render();
+  });
+
+  rack.addEventListener("click", function(e){
+    var t = e.target;
+    if (t.dataset && t.dataset.add){
+      var s = SLOTS.filter(function(x){ return x.id === t.dataset.add; })[0];
+      var used = s.variants.map(function(v){ return v.mod; });
+      var free = MODS.map(function(m){ return m[0]; }).filter(function(m){ return used.indexOf(m) < 0; })[0];
+      s.variants.push({mod: free === undefined ? "" : free, act:"none"});
+      render();
+    }
+    if (t.classList && t.classList.contains("kill")){
+      var sl = SLOTS.filter(function(x){ return x.id === t.dataset.slot; })[0];
+      sl.variants.splice(+t.dataset.i, 1);
+      render();
+    }
+  });
+
+  ["factory","capslock","vid","pid1","pid2"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", build);
+    document.getElementById(id).addEventListener("change", build);
+  });
+
+  document.getElementById("copy").addEventListener("click", function(){
+    var btn = this;
+    var text = out.textContent;
+    function done(){
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function(){ btn.textContent = "Copy"; btn.classList.remove("done"); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done(); } catch (err) { btn.textContent = "Select and copy"; }
+      document.body.removeChild(ta);
+    }
+  });
+
+  document.getElementById("themer").addEventListener("click", function(){
+    var r = document.documentElement;
+    var now = r.getAttribute("data-theme");
+    var dark = now ? now === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
