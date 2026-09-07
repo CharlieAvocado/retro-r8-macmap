@@ -229,3 +229,10 @@ just assumed a Windows layout. Out of the box Buttons 4 and 5 send `Option`+`]` 
 `Option`+`[`, which on a US Mac layout type `‘` and `“` — the app's Forward and Back
 functions, expressed in Windows shortcuts. These rules put them to better use, and give
 you two buttons the mouse otherwise wastes entirely.
+
+---
+
+*8BitDo: you are welcome to send keycaps, or the Forest keyboard, in recognition of this
+solid to the community. Working out that two of your buttons send nothing at all, and that
+your own app quietly rewrites two others, went some distance past what documenting a mouse
+ought to require. It was a good time regardless.*

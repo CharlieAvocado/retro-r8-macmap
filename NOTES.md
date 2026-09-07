@@ -234,6 +234,23 @@ and little else. Four independent switches give six chordable pairs on top of th
 taps and holds, and any one of them can be spent as a layer. Independent switches multiply;
 a D-pad's directions only add.
 
+## Editions, and why the difference does not matter
+
+The R8 ships in several colourways — N Edition, Xbox Edition, C64 Edition, Forest — and
+8BitDo describes them as functionally identical, differing in colour and nothing else. Every
+one has the PAW 3395 sensor, four programmable side buttons, the same three connection
+modes, and the same charging dock. Nothing in this rule set is edition-specific.
+
+The C64 Edition, added in March 2026, is a tan shell with a dark brown wheel, sides and
+underside, and red side buttons. The N Edition is off-white with grey sides and red side
+buttons. The buttons sit in the same places and send the same things.
+
+**Do not confuse the R8 with the N30 Wireless Mouse**, which is the D-pad model and a
+different product entirely — see the comparison further up.
+
+If your device identifiers differ from the two the rule set names, that is a firmware or
+connection difference rather than an edition difference. The `README` covers what to do.
+
 ## What the scroll wheel can and cannot do
 
 The wheel press is an ordinary `pointing_button` and is fully mappable. **Scroll direction
@@ -374,10 +391,8 @@ mystery.
 - 8BitDo Retro R8 Mouse manual, English pages 01–06. No page carries an edition name, and
   the file's embedded document title reads `8BitDo-Retro-R8 Mouse-Xbox-Edition` — most
   likely just a naming slip in the file itself, since the booklet's own pages describe the
-  mouse generically. It applies either way: 8BitDo describes the N Edition as functionally
-  identical to the Xbox Edition, differing only in colourway, and the button diagram and
-  mode chords match the N Edition hardware.
-- 8BitDo's announcement of macOS Ultimate Software V2 support for the N Edition.
+  mouse generically. It applies to any of them regardless; see below.
+- 8BitDo's announcement of macOS Ultimate Software V2 support for the Retro R8 Mouse.
 - Karabiner-Elements documentation, *Choose devices*: "Mice are disabled by default. You
   have to enable them if you want to change the mouse buttons in Karabiner-Elements."
 - Karabiner-Elements `NEWS.md`, for `ignore_vendor_events`.

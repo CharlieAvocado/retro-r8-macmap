@@ -13,16 +13,16 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
   :root{
-    --shell:#EDE8DC;      /* the N Edition's off-white shell */
-    --panel:#F7F4EC;
+    --shell:#E7DBC3;      /* the C64 edition's tan shell */
+    --panel:#F3EBDB;
     --raise:#FFFFFF;
-    --ink:#1C1A16;
-    --ink-2:#5E584D;
-    --ink-3:#8A8377;
-    --flank:#B4ADA0;      /* grey sides and wheel */
-    --line:#D6CFC0;
-    --accent:#C0332C;     /* the red side buttons */
-    --accent-soft:#F0DAD6;
+    --ink:#1F1A13;
+    --ink-2:#5F5545;
+    --ink-3:#8B8070;
+    --flank:#6E5B45;      /* the dark brown wheel and sides */
+    --line:#CFC0A6;
+    --accent:#B5342B;     /* the red side buttons */
+    --accent-soft:#EFD9D4;
     --accent-ink:#FFFFFF;
     --code-bg:#26231D;
     --code-ink:#E8E2D4;
@@ -204,7 +204,7 @@
 <div class="wrap">
   <header class="top">
     <div>
-      <span class="brandmark">8BitDo Retro R8 &middot; N Edition</span>
+      <span class="brandmark">8BitDo Retro R8 &middot; every edition</span>
       <h1>Retro R8 Rule Builder</h1>
     </div>
     <button class="themer" id="themer" type="button">Theme</button>
@@ -221,7 +221,7 @@
         <svg width="132" height="186" viewBox="0 0 132 186" role="img" aria-label="Top-down view of the mouse showing the four side buttons">
           <path class="shellpath" d="M66 6 C96 6 116 30 116 68 L116 128 C116 164 96 180 66 180 C36 180 16 164 16 128 L16 68 C16 30 36 6 66 6 Z"/>
           <line x1="66" y1="8" x2="66" y2="72" stroke="var(--ink-3)" stroke-width="1.2"/>
-          <rect x="59" y="26" width="14" height="30" rx="6" fill="var(--flank)"/>
+          <rect id="s-wheel" class="cold" x="59" y="26" width="14" height="30" rx="6"/>
           <rect id="s-b4" class="cold" x="7" y="60" width="12" height="26" rx="4"/>
           <rect id="s-b5" class="cold" x="7" y="92" width="12" height="26" rx="4"/>
           <rect id="s-b6" class="cold" x="113" y="60" width="12" height="26" rx="4"/>
@@ -235,7 +235,9 @@
           <p><strong>B4</strong> and <strong>B5</strong> are the left flank, live from the
           factory. <strong>B6</strong> and <strong>B7</strong> are the right flank and send
           nothing until you assign them in Ultimate&nbsp;Software.</p>
-          <p class="pc">Manual diagram pieces 6, 7, 8, 9</p>
+          <p><strong>Red</strong> marks anything your current selection changes — the wheel
+          press included, though it is black on the mouse itself.</p>
+          <p class="pc">Manual diagram pieces 2, 6, 7, 8, 9</p>
         </div>
       </div>
 
