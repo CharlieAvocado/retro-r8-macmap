@@ -23,7 +23,7 @@ Everything in this repository, what it is for, and where to start.
 |---|---|---|
 | `README.md` | Setup and the button map | First. It is the only file you must read |
 | `retror8-macmap.json` | The rule set. A bare `{description, manipulators}` object, seven manipulators | You are pasting it into Karabiner |
-| `builder.html` | An offline page that assembles the rule set from dropdowns. Opens preloaded with the configuration above; no installation, no dependencies, nothing leaves the page | You want a different layout and would rather not hand-edit JSON |
+| `builder.html` | Assembles the rule set from dropdowns — [live here](https://charlieavocado.github.io/retror8-macmap/builder.html). Opens preloaded with the configuration above; no dependencies, nothing leaves the page | You want a different layout and would rather not hand-edit JSON |
 | `RECIPES.md` | Around fifty ready-to-paste actions, each in its own copy box, plus a worksheet covering every input the mouse can offer | You are editing by hand, or planning on paper |
 | `NOTES.md` | The lab notebook: what the hardware sends, what it refuses to send, and the reasoning behind every rule | Before changing anything structural, and any time something surprises you |
 | `Retro-R8-Mouse-manual.pdf` | 8BitDo's own booklet, kept here so the button numbering and the mode chords are to hand | You need the diagram, or the left- and right-hand mode chords |
@@ -68,11 +68,16 @@ Step 3 is the one people skip, and skipping it leaves Buttons 6 and 7 dead forev
 
 ---
 
-## Viewing `builder.html`
+## Where the builder lives
 
-GitHub shows HTML files as source rather than rendering them. Two ways round it:
+**[charlieavocado.github.io/retror8-macmap](https://charlieavocado.github.io/retror8-macmap/)**
+— the project page, with the builder one click away. The link is also in this repository's
+**About** panel, top right of the repository home.
 
-- **Download the file and open it in a browser.** It is self-contained and works offline.
-- **Enable GitHub Pages** for this repository (`Settings → Pages`, source: deploy from the
-  default branch). The builder is then live at
-  `https://<owner>.github.io/<repo>/builder.html`.
+**Clicking `builder.html` in the file list does not open it.** GitHub always renders HTML
+as source code, never as a page, and there is no setting that changes that. The only routes
+to a working copy are the link above, or downloading the file and opening it locally — it is
+self-contained and needs no network.
+
+The site is served by GitHub Pages from `main` at the repository root, so every push
+redeploys it.
