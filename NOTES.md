@@ -159,12 +159,14 @@ a mouse that has never met the app — or on one that has been factory reset.
 The mouse offers five switches Karabiner can reach: Buttons 4 to 7 and the wheel press.
 Each of those can carry more than one action, so five switches is not a ceiling of five
 actions. Six mechanisms are available, and they differ in what they add and what they cost.
+`builder.html` generates the first three plus chords; layers, application scope and
+multi-tap are hand-written.
 
 | Mechanism | Karabiner construct | Adds | Costs |
 |---|---|---|---|
-| Tap versus hold | `to_if_alone` with `to_if_held_down` | one action per switch | the tap fires on release, and the hold waits out a threshold |
+| Tap versus hold | `to_if_alone` with `to_if_held_down` | one action per switch | the action you already had moves from key-down to key-release, so it starts firing later |
 | Modifier variants | `mandatory` in `from.modifiers` | one action per modifier per switch | needs the other hand on a keyboard |
-| Simultaneous chord | `simultaneous` | one action per combination | awkward to press, and needs `simultaneous_options` set thoughtfully |
+| Simultaneous chord | `simultaneous` | one action per pair | each member's solo press must wait out the threshold, so the cost lands on gestures already in use. Must sit above its own buttons' rules |
 | Layer button | `set_variable` with a `variable_if` condition | one action per target under the layer | the layer button gives up its own actions |
 | Application scope | `frontmost_application_if` | multiplies every action above | one manipulator per application per action |
 | Multi-tap | `to_delayed_action` with a counter variable | one or two per switch | the single tap cannot commit until the window expires |
@@ -192,6 +194,19 @@ Spending a button as a layer instead, which is what makes the wheel reachable:
 
 A layer is not limited to the mouse's own buttons. The variable it sets is visible to every
 manipulator in the set, so holding a thumb button can change what the keyboard does too.
+
+**What it actually comes to.** Five switches with a bare press and four single-modifier
+variants is 25 trigger slots; adding one hold each takes it to 30. Widening the modifier
+axis to include the six comfortable two-modifier pairs, and allowing a hold on every
+variant, reaches 110 without any new mechanism — that is a picker limitation, not a
+Karabiner one. Spending Button 7 as a layer instead of chording it lands somewhere near
+195, which is past the point where a hand can remember them.
+
+Two things the arithmetic cannot see. **Adjacency:** the two left-flank buttons are worked
+by the same thumb, so a chord across them is awkward in a way no rule can express, and
+spending one as a layer usually beats chording it. **Vocabulary:** slots are worthless
+without actions to put in them, and widening the action list costs no gesture at all — it
+is the cheapest gain available and should be exhausted before reaching for a new mechanism.
 
 **Why a single headline number is misleading.** The mechanisms compete for the same
 presses. A button spent as a layer modifier no longer has a tap or a hold. A pair committed

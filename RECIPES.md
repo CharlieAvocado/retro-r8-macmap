@@ -19,9 +19,10 @@ Every input the mouse can offer, and room to record what you want from it. Trigg
 the `F16`–`F19` assignment from the README. Nothing here is mandatory — most people fill in
 a handful of rows and leave the rest empty.
 
-Each button carries two rows because a click and a hold are separate actions: a click fires
-on release, a hold after a threshold. `builder.html` generates both. Modifier rows and
-chords need writing by hand — see the recipes below.
+Each button carries two rows because a click and a hold are separate actions. Note the
+trade: once a button has a hold, its click fires on release rather than on press.
+`builder.html` generates clicks, holds, modifier variants and chords — everything in this
+worksheet except a chord involving the wheel press.
 
 | Input | Trigger | Your choice |
 |---|---|---|
