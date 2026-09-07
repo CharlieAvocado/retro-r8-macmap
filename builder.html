@@ -218,7 +218,8 @@
   <p class="sub" style="margin-bottom:24px;">Pick what each button should do. The complete
   Karabiner rule set assembles below, scoped to this mouse alone. It opens preloaded with the
   current configuration, so you are editing a working set rather than starting empty. Each
-  button can carry a second action on hold. Nothing leaves this page.</p>
+  button can carry a second action on hold, and any two side buttons can be chorded.
+  Nothing leaves this page.</p>
 
   <div class="cols">
     <div>
@@ -251,6 +252,15 @@
       Back, Delete, forward-delete on <span class="mono">Ctrl</span>, and Return on the
       wheel. Change any of it; Buttons&nbsp;6 and&nbsp;7 start unassigned.</p>
       <div class="rack" id="rack"></div>
+
+      <h2 style="margin-top:26px;">Chords</h2>
+      <p class="preloaded">Two side buttons pressed together, giving a gesture neither has
+      on its own. Chord rules are emitted <em>first</em> — placed after their own buttons'
+      rules they would never fire, because Karabiner takes the first match. The wheel press
+      is not offered here: mixing a pointing button into a <span class="mono">simultaneous</span>
+      rule is untested on this hardware.</p>
+      <div id="chords"></div>
+      <button class="addv" type="button" id="addchord">+ chord</button>
 
       <div class="opts">
         <div class="optrow">
@@ -389,7 +399,12 @@
      factory:null, hold:"none", variants:[{mod:"", act:"ret"}]}
   ];
 
+  // Chords are restricted to the four side buttons, all of which are key_code.
+  var CHORDABLE = ["b4","b5","b6","b7"];
+  var CHORDS = [];
+
   var rack = document.getElementById("rack");
+  var chordsEl = document.getElementById("chords");
   var out = document.getElementById("json");
   var countEl = document.getElementById("count");
   var warnEl = document.getElementById("warn");
@@ -439,7 +454,31 @@
       var sw = document.getElementById("s-" + slot.id);
       if (sw) sw.setAttribute("class", live ? "hot" : "cold");
     });
+    renderChords();
     build();
+  }
+
+  function slotName(id){
+    var s = SLOTS.filter(function(x){ return x.id === id; })[0];
+    return s ? s.name : id;
+  }
+  function chordSelect(which, i, sel){
+    return '<select class="mod" data-chord="' + i + '" data-f="' + which + '" aria-label="Chord button">' +
+      CHORDABLE.map(function(id){
+        return '<option value="' + id + '"' + (id === sel ? " selected" : "") + ">" + slotName(id) + "</option>";
+      }).join("") + "</select>";
+  }
+  function renderChords(){
+    chordsEl.innerHTML = CHORDS.map(function(c, i){
+      return '<div class="slot' + (c.act !== "none" ? " live" : "") + '">' +
+        '<div class="variant">' + chordSelect("a", i, c.a) +
+        '<span class="holdlab" style="flex:0 0 auto;">+</span>' + chordSelect("b", i, c.b) +
+        '<button class="kill" type="button" data-chordkill="' + i + '" title="Remove this chord" aria-label="Remove chord">&times;</button>' +
+        "</div>" +
+        '<div class="variant" style="margin-bottom:0;"><span class="holdlab">does</span>' +
+        '<select class="act" data-chord="' + i + '" data-f="act" aria-label="Action for this chord">' +
+        optionsHTML(c.act) + "</select></div></div>";
+    }).join("");
   }
 
   function ids(){
@@ -486,6 +525,31 @@
   function build(){
     var man = [];
     var warnings = [];
+
+    // Chords go above everything: a chord placed below its own buttons' rules
+    // can never match, because Karabiner takes the first manipulator that fits.
+    var pairSeen = {};
+    CHORDS.forEach(function(c){
+      if (c.act === "none") return;
+      if (c.a === c.b){ warnings.push("A chord needs two different buttons."); return; }
+      var key = [c.a, c.b].sort().join("+");
+      if (pairSeen[key]){ warnings.push("The same pair of buttons has two chords."); return; }
+      pairSeen[key] = true;
+      var A = SLOTS.filter(function(x){ return x.id === c.a; })[0];
+      var B = SLOTS.filter(function(x){ return x.id === c.b; })[0];
+      man.push({
+        description: A.name + " + " + B.name + " -> " + BY_KEY[c.act].label,
+        from: {
+          simultaneous: [{key_code:A.from.key_code}, {key_code:B.from.key_code}],
+          simultaneous_options: {key_down_order:"insensitive", key_up_order:"insensitive"},
+          modifiers: {optional:["any"]}
+        },
+        parameters: {"basic.simultaneous_threshold_milliseconds": 50},
+        to: BY_KEY[c.act].to,
+        type: "basic",
+        conditions: conditions()
+      });
+    });
 
     SLOTS.forEach(function(slot){
       // Specific before general: a modifier variant must precede the bare rule.
@@ -568,6 +632,34 @@
       sl.variants.splice(+t.dataset.i, 1);
       render();
     }
+  });
+
+  document.getElementById("addchord").addEventListener("click", function(){
+    var used = {};
+    CHORDS.forEach(function(c){ used[[c.a,c.b].sort().join("+")] = true; });
+    var pick = null;
+    for (var i = 0; i < CHORDABLE.length && !pick; i++){
+      for (var j = i+1; j < CHORDABLE.length && !pick; j++){
+        var k = [CHORDABLE[i], CHORDABLE[j]].sort().join("+");
+        if (!used[k]) pick = {a:CHORDABLE[i], b:CHORDABLE[j], act:"none"};
+      }
+    }
+    if (!pick){ return; }
+    CHORDS.push(pick);
+    render();
+  });
+
+  chordsEl.addEventListener("change", function(e){
+    var t = e.target;
+    if (!t.dataset || t.dataset.chord === undefined) return;
+    CHORDS[+t.dataset.chord][t.dataset.f] = t.value;
+    render();
+  });
+  chordsEl.addEventListener("click", function(e){
+    var k = e.target.dataset && e.target.dataset.chordkill;
+    if (k === undefined) return;
+    CHORDS.splice(+k, 1);
+    render();
   });
 
   ["factory","capslock","vid","pid1","pid2"].forEach(function(id){
