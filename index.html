@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retro R8 MacMap</title>
+<meta name="description" content="Karabiner-Elements rules that make the 8BitDo Retro R8 Mouse work properly on macOS.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --shell:#E7DBC3; --panel:#F3EBDB; --raise:#FFFFFF;
+    --ink:#1F1A13; --ink-2:#5F5545; --ink-3:#8B8070;
+    --flank:#6E5B45; --line:#CFC0A6;
+    --accent:#B5342B; --accent-ink:#FFFFFF;
+    --radius:3px;
+    color-scheme:light dark;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --shell:#16151A; --panel:#1D1C22; --raise:#25242C;
+      --ink:#EDE9DF; --ink-2:#A9A296; --ink-3:#7C766B;
+      --flank:#4A4741; --line:#33313A;
+      --accent:#E2564E; --accent-ink:#17161A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --shell:#16151A; --panel:#1D1C22; --raise:#25242C;
+    --ink:#EDE9DF; --ink-2:#A9A296; --ink-3:#7C766B;
+    --flank:#4A4741; --line:#33313A;
+    --accent:#E2564E; --accent-ink:#17161A;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--shell); color:var(--ink);
+    font-family:'Archivo',system-ui,-apple-system,'Helvetica Neue',sans-serif;
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  code,.mono{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;}
+  .wrap{max-width:780px;margin:0 auto;padding:44px 22px 72px;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;
+  }
+  h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:-.025em;margin:0 0 12px;line-height:1.03;}
+  .lede{font-size:17px;color:var(--ink-2);margin:0 0 8px;max-width:60ch;}
+  .rule-line{border:0;border-top:2px solid var(--ink);margin:26px 0 30px;}
+
+  h2{font-size:12px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);margin:36px 0 14px;}
+
+  .cta{
+    display:inline-block;background:var(--accent);color:var(--accent-ink);
+    text-decoration:none;font-weight:600;font-size:16px;
+    padding:13px 22px;border-radius:var(--radius);margin:6px 0 4px;
+  }
+  .cta:hover{filter:brightness(1.08);}
+  .cta-note{font-size:13.5px;color:var(--ink-3);margin:8px 0 0;max-width:58ch;}
+
+  table{width:100%;border-collapse:collapse;font-size:15px;}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600;}
+  td:first-child{white-space:nowrap;font-weight:500;}
+  tbody tr:last-child td{border-bottom:0;}
+
+  ol{padding-left:22px;margin:0;}
+  ol li{margin-bottom:9px;color:var(--ink-2);}
+  ol li strong{color:var(--ink);}
+
+  .files{list-style:none;padding:0;margin:0;}
+  .files li{padding:10px 0;border-bottom:1px solid var(--line);font-size:15px;}
+  .files li:last-child{border-bottom:0;}
+  .files a{color:var(--accent);text-decoration:none;font-weight:600;}
+  .files a:hover{text-decoration:underline;}
+  .files span{display:block;color:var(--ink-2);font-size:14px;margin-top:2px;}
+
+  .callout{
+    background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--flank);
+    border-radius:0 var(--radius) var(--radius) 0;padding:14px 16px;font-size:14.5px;color:var(--ink-2);
+  }
+  .callout strong{color:var(--ink);}
+  footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-3);}
+  footer a{color:var(--accent);}
+  footer .joke{font-style:italic;margin-top:14px;max-width:62ch;}
+  a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">8BitDo Retro R8 Mouse &middot; Karabiner-Elements</p>
+  <h1>Retro R8 MacMap</h1>
+  <p class="lede">Rules that make the Retro R8 Mouse work properly on macOS. All four side
+  buttons become usable, including the two that send nothing at all out of the box, and
+  every rule is scoped to this mouse alone.</p>
+  <hr class="rule-line">
+
+  <a class="cta" href="builder.html">Open the rule builder</a>
+  <p class="cta-note">Pick an action for each button and it assembles the complete file.
+  Opens loaded with the configuration below rather than empty. Runs entirely in your
+  browser.</p>
+
+  <h2>What it does out of the box</h2>
+  <table>
+    <thead><tr><th>Button</th><th>Becomes</th></tr></thead>
+    <tbody>
+      <tr><td>Button 4</td><td>Back</td></tr>
+      <tr><td>Button 5</td><td>Delete (backspace)</td></tr>
+      <tr><td>Button 5 + <code>Ctrl</code></td><td>Delete forward</td></tr>
+      <tr><td>Wheel press</td><td><code>Return</code></td></tr>
+      <tr><td>Buttons 6 and 7</td><td>yours to assign</td></tr>
+    </tbody>
+  </table>
+  <p class="cta-note">Back and Delete on the thumb buttons is a preference, not a
+  recommendation. Swapping it is a one-line edit, and the builder does it for you.</p>
+
+  <h2>Setup, in four steps</h2>
+  <ol>
+    <li><strong>Tick "Modify events"</strong> for every Retro R8 row in
+      <code>Karabiner-Elements &rarr; Devices</code>. The mouse presents two interfaces and
+      each has its own checkbox — missing one is why the wheel press appears dead.</li>
+    <li><strong>Remove any Simple Modifications</strong> targeting the mouse. They run first
+      and rewrite buttons out from under these rules.</li>
+    <li><strong>Assign the side buttons</strong> in 8BitDo's Ultimate Software V2 to
+      <code>F16</code>–<code>F19</code>. This is the step that wakes Buttons 6 and 7, and
+      skipping it leaves them dead permanently.</li>
+    <li><strong>Paste the rules</strong> into
+      <code>Karabiner-Elements &rarr; Complex Modifications</code>, clearing the default
+      contents first.</li>
+  </ol>
+
+  <h2>The files</h2>
+  <ul class="files">
+    <li><a href="builder.html">builder.html</a>
+      <span>Assembles the rule set from your choices. Offline, no dependencies.</span></li>
+    <li><a href="https://github.com/CharlieAvocado/retror8-macmap/blob/main/README.md">README</a>
+      <span>Setup and the button map.</span></li>
+    <li><a href="https://github.com/CharlieAvocado/retror8-macmap/blob/main/NOTES.md">NOTES</a>
+      <span>The lab notebook: what the hardware sends, what it refuses to send, and why every rule is shaped the way it is.</span></li>
+    <li><a href="https://github.com/CharlieAvocado/retror8-macmap/blob/main/RECIPES.md">RECIPES</a>
+      <span>Around fifty ready-to-paste actions, plus a worksheet covering every input the mouse offers.</span></li>
+    <li><a href="https://github.com/CharlieAvocado/retror8-macmap/blob/main/INDEX.md">INDEX</a>
+      <span>A map of the whole repository.</span></li>
+    <li><a href="retror8-macmap.json">retror8-macmap.json</a>
+      <span>The rule set itself. Seven manipulators.</span></li>
+    <li><a href="Retro-R8-Mouse-manual.pdf">Retro-R8-Mouse-manual.pdf</a>
+      <span>8BitDo's booklet, for the button diagram and the hand-mode chords.</span></li>
+  </ul>
+
+  <h2>Two things worth knowing first</h2>
+  <div class="callout">
+    <p style="margin:0 0 10px;"><strong>Buttons 6 and 7 send nothing.</strong> They are the
+    right-flank pair, muted by the firmware. Left-hand mode does not unlock them — it is a
+    mirror that moves the live pair to the other flank and reverses your click buttons.
+    8BitDo's own software is the only route to them.</p>
+    <p style="margin:0;"><strong>Saving a profile in that software rewrites Buttons 4 and
+    5.</strong> There are three possible firmware states, and the rule set covers two of
+    them so a factory reset cannot break it.</p>
+  </div>
+
+  <footer>
+    <a href="https://github.com/CharlieAvocado/retror8-macmap">Source on GitHub</a> &middot;
+    MIT licensed &middot; a sibling of
+    <a href="https://github.com/CharlieAvocado/retro108-macmap">retro108-macmap</a>, the same
+    treatment for the Retro 108 keyboard.
+    <p class="joke">8BitDo: you are welcome to send keycaps, or the Forest keyboard, in
+    recognition of this solid to the community. Working out that two of your buttons send
+    nothing at all, and that your own app quietly rewrites two others, went some distance
+    past what documenting a mouse ought to require. It was a good time regardless.</p>
+  </footer>
+</div>
+</body>
+</html>
