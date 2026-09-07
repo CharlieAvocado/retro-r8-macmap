@@ -216,6 +216,14 @@ switch, which is roughly what the builder generates.
 So the gap between 36 and 8,192 is not a missing feature. **The builder is sized to the
 operator rather than to the tool**, deliberately.
 
+**A caveat on the arithmetic.** These figures have not been independently checked, and the
+modifier count in particular rests on judgement calls — whether side-specific modifier names
+count as distinct triggers, whether `fn` belongs in the total, how many `simultaneous`
+members are realistic. Read them as an order of magnitude rather than a tally, and assume
+some of the detail is wrong. What is not in doubt is the shape of the answer: the ceiling
+sits far past anything a person could remember, and further past anything a person needs.
+The interesting numbers were never the big ones.
+
 Two things the arithmetic cannot see. **Adjacency:** the two left-flank buttons are worked
 by the same thumb, so a chord across them is awkward in a way no rule can express, and
 spending one as a layer usually beats chording it. **Vocabulary:** triggers are worthless
