@@ -111,6 +111,10 @@
   .shellpath{fill:var(--panel);stroke:var(--ink-3);stroke-width:1.5;}
 
   /* ---- rack ---- */
+  .preloaded{
+    font-size:13px;color:var(--ink-2);margin:0 0 12px;max-width:62ch;
+    border-left:3px solid var(--flank);padding-left:11px;
+  }
   .rack{display:flex;flex-direction:column;gap:10px;}
   .slot{
     background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--flank);
@@ -207,7 +211,9 @@
   </header>
 
   <p class="sub" style="margin-bottom:24px;">Pick what each button should do. The complete
-  Karabiner rule set assembles below, scoped to this mouse alone. Nothing leaves this page.</p>
+  Karabiner rule set assembles below, scoped to this mouse alone. It opens preloaded with the
+  current configuration, so you are editing a working set rather than starting empty.
+  Nothing leaves this page.</p>
 
   <div class="cols">
     <div>
@@ -234,6 +240,9 @@
       </div>
 
       <h2>Buttons</h2>
+      <p class="preloaded">Loaded with the configuration the repository ships with —
+      Back, Delete, forward-delete on <span class="mono">Ctrl</span>, and Return on the
+      wheel. Change any of it; Buttons&nbsp;6 and&nbsp;7 start unassigned.</p>
       <div class="rack" id="rack"></div>
 
       <div class="opts">

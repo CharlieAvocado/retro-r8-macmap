@@ -18,9 +18,11 @@ The files:
 
 | File | What |
 |---|---|
+| `INDEX.md` | A map of everything here, and where to start |
 | `retror8-macmap.json` | The rule set. A bare `{description, manipulators}` object |
 | `RECIPES.md` | Ready-to-paste actions, and a worksheet for planning your own layout |
-| `builder.html` | An offline page that assembles the rule set from your choices |
+| `builder.html` | An offline page that assembles the rule set from your choices. Opens preloaded with the configuration above |
+| `Retro-R8-Mouse-manual.pdf` | 8BitDo's booklet, for the button diagram and the mode chords |
 | `NOTES.md` | The lab notebook — what the hardware sends, why two of the buttons are silent out of the box, why left-hand mode is not the answer, and why each rule is shaped the way it is. Read it before changing anything |
 
 ---
@@ -149,8 +151,14 @@ Two places to get the replacement from:
   It also carries a worksheet listing every input the mouse can offer, with room to record
   what you want from each.
 - `builder.html` — the same thing interactively. Open it in a browser, pick an action for
-  each button, and it assembles the complete file. No installation, and nothing leaves the
-  page.
+  each button, and it assembles the complete file. It starts loaded with the configuration
+  above rather than empty, so you are editing a working set. No installation, and nothing
+  leaves the page.
+
+  **GitHub will not render it in the browser** — it shows HTML files as source. Either
+  download the file and open it locally, which works offline, or enable GitHub Pages for
+  the repository (`Settings → Pages`, source: deploy from the default branch) and it goes
+  live at `https://<owner>.github.io/<repo>/builder.html`.
 
 **If you change Button 4 or Button 5, change its `FACTORY FIRMWARE` twin too.** Those three
 manipulators exist so the set still works on a mouse that has never met the vendor app, or
