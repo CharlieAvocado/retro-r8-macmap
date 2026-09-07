@@ -19,33 +19,37 @@ Every input the mouse can offer, and room to record what you want from it. Trigg
 the `F16`–`F19` assignment from the README. Nothing here is mandatory — most people fill in
 a handful of rows and leave the rest empty.
 
+Each button carries two rows because a click and a hold are separate actions: a click fires
+on release, a hold after a threshold. `builder.html` generates both. Modifier rows and
+chords need writing by hand — see the recipes below.
+
 | Input | Trigger | Your choice |
 |---|---|---|
-| Button 4 | `f16` | |
+| Button 4, clicked | `f16` | |
 | Button 4, held | `f16` held | |
 | Button 4 + `Ctrl` | `f16` + `control` | |
 | Button 4 + `Opt` | `f16` + `option` | |
 | Button 4 + `Cmd` | `f16` + `command` | |
 | Button 4 + `Shift` | `f16` + `shift` | |
-| Button 5 | `f17` | |
+| Button 5, clicked | `f17` | |
 | Button 5, held | `f17` held | |
 | Button 5 + `Ctrl` | `f17` + `control` | |
 | Button 5 + `Opt` | `f17` + `option` | |
 | Button 5 + `Cmd` | `f17` + `command` | |
 | Button 5 + `Shift` | `f17` + `shift` | |
-| Button 6 | `f18` | |
+| Button 6, clicked | `f18` | |
 | Button 6, held | `f18` held | |
 | Button 6 + `Ctrl` | `f18` + `control` | |
 | Button 6 + `Opt` | `f18` + `option` | |
 | Button 6 + `Cmd` | `f18` + `command` | |
 | Button 6 + `Shift` | `f18` + `shift` | |
-| Button 7 | `f19` | |
+| Button 7, clicked | `f19` | |
 | Button 7, held | `f19` held | |
 | Button 7 + `Ctrl` | `f19` + `control` | |
 | Button 7 + `Opt` | `f19` + `option` | |
 | Button 7 + `Cmd` | `f19` + `command` | |
 | Button 7 + `Shift` | `f19` + `shift` | |
-| Wheel press | `button3` | |
+| Wheel press, clicked | `button3` | |
 | Wheel press, held | `button3` held | |
 | Buttons 4 + 5 together | `simultaneous` | |
 | Buttons 4 + 6 together | `simultaneous` | |

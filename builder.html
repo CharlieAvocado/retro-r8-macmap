@@ -130,6 +130,11 @@
   .piece{font-size:11px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;margin-left:auto;}
 
   .variant{display:flex;gap:8px;align-items:center;margin-bottom:7px;flex-wrap:wrap;}
+  .hold-row{margin-top:7px;padding-top:8px;border-top:1px dashed var(--line);}
+  .holdlab{
+    flex:0 0 122px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+    color:var(--ink-3);padding-left:2px;
+  }
   .variant:last-child{margin-bottom:0;}
   select,input[type=text],input[type=number]{
     font-family:'Archivo',sans-serif;font-size:14px;color:var(--ink);
@@ -212,8 +217,8 @@
 
   <p class="sub" style="margin-bottom:24px;">Pick what each button should do. The complete
   Karabiner rule set assembles below, scoped to this mouse alone. It opens preloaded with the
-  current configuration, so you are editing a working set rather than starting empty.
-  Nothing leaves this page.</p>
+  current configuration, so you are editing a working set rather than starting empty. Each
+  button can carry a second action on hold. Nothing leaves this page.</p>
 
   <div class="cols">
     <div>
@@ -372,16 +377,16 @@
   var SLOTS = [
     {id:"b4", name:"Button 4", piece:"piece 6 · front left", from:{key_code:"f16"}, trig:"f16",
      factory:{key_code:"close_bracket", mods:["left_option"]},
-     variants:[{mod:"", act:"back"}]},
+     hold:"none", variants:[{mod:"", act:"back"}]},
     {id:"b5", name:"Button 5", piece:"piece 7 · rear left", from:{key_code:"f17"}, trig:"f17",
      factory:{key_code:"open_bracket", mods:["left_option"]},
-     variants:[{mod:"", act:"del"},{mod:"control", act:"delf"}]},
+     hold:"none", variants:[{mod:"", act:"del"},{mod:"control", act:"delf"}]},
     {id:"b6", name:"Button 6", piece:"piece 8 · front right", from:{key_code:"f18"}, trig:"f18",
-     factory:null, variants:[{mod:"", act:"none"}]},
+     factory:null, hold:"none", variants:[{mod:"", act:"none"}]},
     {id:"b7", name:"Button 7", piece:"piece 9 · rear right", from:{key_code:"f19"}, trig:"f19",
-     factory:null, variants:[{mod:"", act:"none"}]},
+     factory:null, hold:"none", variants:[{mod:"", act:"none"}]},
     {id:"wheel", name:"Wheel press", piece:"piece 2 · middle", from:{pointing_button:"button3"}, trig:"button3",
-     factory:null, variants:[{mod:"", act:"ret"}]}
+     factory:null, hold:"none", variants:[{mod:"", act:"ret"}]}
   ];
 
   var rack = document.getElementById("rack");
@@ -409,7 +414,7 @@
   function render(){
     rack.innerHTML = "";
     SLOTS.forEach(function(slot){
-      var live = slot.variants.some(function(v){ return v.act !== "none"; });
+      var live = slot.hold !== "none" || slot.variants.some(function(v){ return v.act !== "none"; });
       var el = document.createElement("div");
       el.className = "slot" + (live ? " live" : "");
       var head = '<div class="slot-head"><span class="slot-name">' + slot.name + '</span>' +
@@ -424,7 +429,11 @@
             : "") +
           "</div>";
       }).join("");
-      el.innerHTML = head + body +
+      var holdRow = '<div class="variant hold-row">' +
+        '<span class="holdlab">held</span>' +
+        '<select class="act" data-slot="' + slot.id + '" data-f="hold" aria-label="Action when ' +
+        slot.name + ' is held down">' + optionsHTML(slot.hold) + "</select></div>";
+      el.innerHTML = head + body + holdRow +
         '<button class="addv" type="button" data-add="' + slot.id + '">+ modifier variant</button>';
       rack.appendChild(el);
       var sw = document.getElementById("s-" + slot.id);
@@ -455,12 +464,23 @@
     return Object.keys(m).length ? m : null;
   }
 
-  function manipulator(desc, fromBase, mandatory, to){
+  function manipulator(desc, fromBase, mandatory, to, heldTo){
     var from = {};
     Object.keys(fromBase).forEach(function(k){ from[k] = fromBase[k]; });
     var mods = modifiers(mandatory);
     if (mods) from.modifiers = mods;
-    return {description:desc, from:from, to:to, type:"basic", conditions:conditions()};
+    var m = {description:desc, from:from};
+    if (heldTo){
+      // A tap and a hold are two separate keys in the JSON, never `to`.
+      if (to) m.to_if_alone = to;
+      m.to_if_held_down = heldTo;
+      m.parameters = {"basic.to_if_held_down_threshold_milliseconds": 250};
+    } else {
+      m.to = to;
+    }
+    m.type = "basic";
+    m.conditions = conditions();
+    return m;
   }
 
   function build(){
@@ -473,14 +493,25 @@
         return (b.mod ? 1 : 0) - (a.mod ? 1 : 0);
       });
       var seen = {};
+      var heldTo = slot.hold !== "none" ? BY_KEY[slot.hold].to : null;
+      var bareEmitted = false;
       vs.forEach(function(v){
-        if (v.act === "none") return;
+        var bare = !v.mod;
+        if (v.act === "none" && !(bare && heldTo)) return;
         if (seen[v.mod]) { warnings.push(slot.name + " has two rules for the same press."); return; }
         seen[v.mod] = true;
-        var label = slot.name + (v.mod ? " + " + MODLABEL[v.mod] : "") +
-                    " (" + slot.trig + ") -> " + BY_KEY[v.act].label;
-        man.push(manipulator(label, slot.from, v.mod ? [v.mod] : [], BY_KEY[v.act].to));
+        var to = v.act === "none" ? null : BY_KEY[v.act].to;
+        var label = slot.name + (v.mod ? " + " + MODLABEL[v.mod] : "") + " (" + slot.trig + ") -> " +
+          (bare && heldTo
+            ? (to ? BY_KEY[v.act].label + " on click, " : "") + BY_KEY[slot.hold].label + " on hold"
+            : BY_KEY[v.act].label);
+        man.push(manipulator(label, slot.from, v.mod ? [v.mod] : [], to, bare ? heldTo : null));
+        if (bare) bareEmitted = true;
       });
+      if (heldTo && !bareEmitted){
+        man.push(manipulator(slot.name + " (" + slot.trig + ") -> " + BY_KEY[slot.hold].label +
+          " on hold", slot.from, [], null, heldTo));
+      }
     });
 
     if (document.getElementById("factory").checked){
@@ -489,12 +520,17 @@
         var vs = slot.variants.slice().sort(function(a, b){
           return (b.mod ? 1 : 0) - (a.mod ? 1 : 0);
         });
+        var fHeld = slot.hold !== "none" ? BY_KEY[slot.hold].to : null;
         vs.forEach(function(v){
-          if (v.act === "none") return;
+          var bare = !v.mod;
+          if (v.act === "none" && !(bare && fHeld)) return;
           var mandatory = slot.factory.mods.concat(v.mod ? [v.mod] : []);
+          var to = v.act === "none" ? null : BY_KEY[v.act].to;
           var label = "FACTORY FIRMWARE — " + slot.name + (v.mod ? " + " + MODLABEL[v.mod] : "") +
-                      " -> " + BY_KEY[v.act].label;
-          man.push(manipulator(label, {key_code:slot.factory.key_code}, mandatory, BY_KEY[v.act].to));
+            " -> " + (bare && fHeld
+              ? (to ? BY_KEY[v.act].label + " on click, " : "") + BY_KEY[slot.hold].label + " on hold"
+              : BY_KEY[v.act].label);
+          man.push(manipulator(label, {key_code:slot.factory.key_code}, mandatory, to, bare ? fHeld : null));
         });
       });
     }
@@ -513,7 +549,8 @@
     var t = e.target;
     if (!t.dataset || !t.dataset.slot) return;
     var slot = SLOTS.filter(function(s){ return s.id === t.dataset.slot; })[0];
-    slot.variants[+t.dataset.i][t.dataset.f] = t.value;
+    if (t.dataset.f === "hold") slot.hold = t.value;
+    else slot.variants[+t.dataset.i][t.dataset.f] = t.value;
     render();
   });
 
