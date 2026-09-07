@@ -1,4 +1,4 @@
-# Recipes — actions to paste into `retror8-macmap.json`
+# Recipes — actions to paste into `retro-r8-macmap.json`
 
 Every block below is a complete `to` line. Find the manipulator you want to change by its
 `description`, delete its existing `to` line, and paste one of these in its place.

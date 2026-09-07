@@ -22,8 +22,8 @@ Everything in this repository, what it is for, and where to start.
 | File | What it is | Read it when |
 |---|---|---|
 | `README.md` | Setup and the button map | First. It is the only file you must read |
-| `retror8-macmap.json` | The rule set. A bare `{description, manipulators}` object, seven manipulators | You are pasting it into Karabiner |
-| `builder.html` | Assembles the rule set from dropdowns — [live here](https://charlieavocado.github.io/retror8-macmap/builder.html). Opens preloaded with the configuration above; no dependencies, nothing leaves the page | You want a different layout and would rather not hand-edit JSON |
+| `retro-r8-macmap.json` | The rule set. A bare `{description, manipulators}` object, seven manipulators | You are pasting it into Karabiner |
+| `builder.html` | Assembles the rule set from dropdowns — [live here](https://charlieavocado.github.io/retro-r8-macmap/builder.html). Opens preloaded with the configuration above; no dependencies, nothing leaves the page | You want a different layout and would rather not hand-edit JSON |
 | `RECIPES.md` | Around fifty ready-to-paste actions, each in its own copy box, plus a worksheet covering every input the mouse can offer | You are editing by hand, or planning on paper |
 | `NOTES.md` | The lab notebook: what the hardware sends, what it refuses to send, and the reasoning behind every rule | Before changing anything structural, and any time something surprises you |
 | `Retro-R8-Mouse-manual.pdf` | 8BitDo's own booklet, kept here so the button numbering and the mode chords are to hand | You need the diagram, or the left- and right-hand mode chords |
@@ -62,7 +62,7 @@ and `F18` and `F19` do nothing on macOS, so they stay inert until you give them 
    the mouse presents two interfaces and each has its own checkbox.
 2. Remove any Simple Modifications targeting the mouse.
 3. In 8BitDo's Ultimate Software, set Buttons 4 to 7 to `F16`, `F17`, `F18`, `F19`.
-4. Paste `retror8-macmap.json` into `Karabiner-Elements → Complex Modifications`.
+4. Paste `retro-r8-macmap.json` into `Karabiner-Elements → Complex Modifications`.
 
 Step 3 is the one people skip, and skipping it leaves Buttons 6 and 7 dead forever.
 
@@ -70,7 +70,7 @@ Step 3 is the one people skip, and skipping it leaves Buttons 6 and 7 dead forev
 
 ## Where the builder lives
 
-**[charlieavocado.github.io/retror8-macmap](https://charlieavocado.github.io/retror8-macmap/)**
+**[charlieavocado.github.io/retro-r8-macmap](https://charlieavocado.github.io/retro-r8-macmap/)**
 — the project page, with the builder one click away. The link is also in this repository's
 **About** panel, top right of the repository home.
 

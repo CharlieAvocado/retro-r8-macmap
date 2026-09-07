@@ -4,7 +4,7 @@ The lab notebook. `README.md` says what to do; this says why, and what the hardw
 will not let you do at all.
 
 Everything here has been confirmed on hardware: which buttons emit what, in both hand
-modes, from real EventViewer captures, and every rule in `retror8-macmap.json` tested in
+modes, from real EventViewer captures, and every rule in `retro-r8-macmap.json` tested in
 place. Nothing in this document is inferred unless it says so.
 
 It records what the mouse does and what Karabiner can do about it. What the buttons are

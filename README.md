@@ -4,9 +4,9 @@ A [Karabiner-Elements](https://karabiner-elements.pqrs.org/) rule set for the 8B
 Retro R8 Mouse on macOS. It makes all four side buttons reachable, including the two that
 send nothing out of the box, and scopes every rule to the mouse alone.
 
-**→ [Open the rule builder](https://charlieavocado.github.io/retror8-macmap/builder.html)** —
+**→ [Open the rule builder](https://charlieavocado.github.io/retro-r8-macmap/builder.html)** —
 pick an action for each button and it assembles the whole file. Or start from
-[the project page](https://charlieavocado.github.io/retror8-macmap/).
+[the project page](https://charlieavocado.github.io/retro-r8-macmap/).
 
 **The button assignments are one person's taste and are meant to be changed.** They are the
 easiest part of this to replace — see
@@ -23,9 +23,9 @@ The files:
 | File | What |
 |---|---|
 | `INDEX.md` | A map of everything here, and where to start |
-| `retror8-macmap.json` | The rule set. A bare `{description, manipulators}` object |
+| `retro-r8-macmap.json` | The rule set. A bare `{description, manipulators}` object |
 | `RECIPES.md` | Ready-to-paste actions, and a worksheet for planning your own layout |
-| `builder.html` | Assembles the rule set from your choices — [live here](https://charlieavocado.github.io/retror8-macmap/builder.html). Opens preloaded with the configuration above |
+| `builder.html` | Assembles the rule set from your choices — [live here](https://charlieavocado.github.io/retro-r8-macmap/builder.html). Opens preloaded with the configuration above |
 | `Retro-R8-Mouse-manual.pdf` | 8BitDo's booklet, for the button diagram and the mode chords |
 | `NOTES.md` | The lab notebook — what the hardware sends, why two of the buttons are silent out of the box, why left-hand mode is not the answer, and why each rule is shaped the way it is. Read it before changing anything |
 
@@ -110,7 +110,7 @@ for the factory keystrokes — but Buttons 6 and 7 stay dead. See `NOTES.md`.
 
 ### 4. Import the rules
 
-1. Open `retror8-macmap.json` and copy the whole file.
+1. Open `retro-r8-macmap.json` and copy the whole file.
 2. `Karabiner-Elements → Complex Modifications`.
 3. **Add your own rule** → delete the default contents → paste the copied JSON → Add
    (or Save).
@@ -160,7 +160,7 @@ Two places to get the replacement from:
   leaves the page.
 
   It is live at
-  [charlieavocado.github.io/retror8-macmap/builder.html](https://charlieavocado.github.io/retror8-macmap/builder.html).
+  [charlieavocado.github.io/retro-r8-macmap/builder.html](https://charlieavocado.github.io/retro-r8-macmap/builder.html).
   Clicking `builder.html` in the file list above will *not* open it — GitHub always shows
   HTML as source, never rendered. Downloading the file and opening it locally works too;
   it is self-contained and needs no network.
