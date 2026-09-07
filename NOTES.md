@@ -195,18 +195,37 @@ Spending a button as a layer instead, which is what makes the wheel reachable:
 A layer is not limited to the mouse's own buttons. The variable it sets is visible to every
 manipulator in the set, so holding a thumb button can change what the keyboard does too.
 
-**What it actually comes to.** Five switches with a bare press and four single-modifier
-variants is 25 trigger slots; adding one hold each takes it to 30. Widening the modifier
-axis to include the six comfortable two-modifier pairs, and allowing a hold on every
-variant, reaches 110 without any new mechanism — that is a picker limitation, not a
-Karabiner one. Spending Button 7 as a layer instead of chording it lands somewhere near
-195, which is past the point where a hand can remember them.
+**What it actually comes to.** The rule set as shipped, extended through the builder,
+reaches **36 distinct triggers**: five switches each with a bare press, four single-modifier
+variants and a hold, plus the six two-button chords.
+
+The ceiling is far higher and mostly beside the point. `from.modifiers.mandatory` accepts
+side-specific names and must match exactly, so `left_shift` and `right_shift` are two
+separate triggers — eight physical modifiers give 256 states. `simultaneous` accepts three
+and four members, not just pairs, so the four side buttons yield fifteen non-empty subsets
+plus the wheel alone. At 16 trigger groups × 256 modifier states × 2 for tap and hold, the
+arithmetic says **8,192**, and counting `fn` as a ninth modifier doubles it.
+
+**That number is useless, and it is worth knowing why.** Karabiner walks the manipulator
+list top to bottom on every event and takes the first match, so each of those 8,192
+triggers is a literal manipulator. Perceptible input lag is reported in the low thousands —
+an order of magnitude below the ceiling. Most of the 256 modifier states are already
+claimed by macOS or the frontmost application. And a hand holds five to nine gestures per
+switch, which is roughly what the builder generates.
+
+So the gap between 36 and 8,192 is not a missing feature. **The builder is sized to the
+operator rather than to the tool**, deliberately.
 
 Two things the arithmetic cannot see. **Adjacency:** the two left-flank buttons are worked
 by the same thumb, so a chord across them is awkward in a way no rule can express, and
-spending one as a layer usually beats chording it. **Vocabulary:** slots are worthless
+spending one as a layer usually beats chording it. **Vocabulary:** triggers are worthless
 without actions to put in them, and widening the action list costs no gesture at all — it
 is the cheapest gain available and should be exhausted before reaching for a new mechanism.
+
+**Where this started.** Out of the box, across those five switches, exactly one did
+something useful: the wheel press was a middle click. Buttons 6 and 7 sent nothing at all.
+Buttons 4 and 5 typed `‘` and `“` into whatever had focus, which is worse than nothing. The
+DPI switch was and remains unreachable. One useful action became thirty-six.
 
 **Why a single headline number is misleading.** The mechanisms compete for the same
 presses. A button spent as a layer modifier no longer has a tap or a hold. A pair committed
